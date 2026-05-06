@@ -1,0 +1,2481 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>הכנה למבחן מחוננים שלב ב' - כיתה ג'</title>
+<!-- Firebase SDK (Firestore) - Sync across devices -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+  import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp }
+    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC6KHPr46WElqaeSe_UjBVOnWwqFDv8UqA",
+    authDomain: "siegel-family-safe.firebaseapp.com",
+    projectId: "siegel-family-safe",
+    storageBucket: "siegel-family-safe.firebasestorage.app",
+    messagingSenderId: "873479008517",
+    appId: "1:873479008517:web:aeec00cc8fe38674a0076c"
+  };
+
+  try {
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    window._fb = { db, doc, getDoc, setDoc, onSnapshot };
+    window._fbReady = true;
+    if (window._onFirebaseReady) window._onFirebaseReady();
+  } catch (e) {
+    console.error('Firebase init failed:', e);
+    window._fbReady = false;
+    window._fbError = e.message;
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Secular+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #ec4899;
+    --accent: #f59e0b;
+    --success: #10b981;
+    --error: #ef4444;
+    --warning: #f97316;
+    --bg: #fef3c7;
+    --bg-2: #fce7f3;
+    --bg-3: #ddd6fe;
+    --surface: #ffffff;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --shadow-sm: 0 2px 8px rgba(99, 102, 241, 0.08);
+    --shadow-md: 0 8px 30px rgba(99, 102, 241, 0.12);
+    --shadow-lg: 0 20px 60px rgba(99, 102, 241, 0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Rubik', sans-serif;
+    background: linear-gradient(135deg, var(--bg) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -100px; right: -100px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.15), transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -150px; left: -150px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15), transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+    animation: slideDown 0.6s ease-out;
+  }
+
+  h1 {
+    font-family: 'Secular One', sans-serif;
+    font-size: clamp(26px, 4.5vw, 40px);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  /* פרופיל */
+  .profile-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .profile-pill {
+    background: var(--surface);
+    border-radius: 100px;
+    padding: 10px 18px;
+    box-shadow: var(--shadow-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+
+  .profile-pill:active { transform: scale(0.97); }
+
+  .profile-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  .profile-name { font-weight: 700; }
+  .profile-edit { color: var(--primary); font-size: 12px; }
+
+  .sync-status {
+    background: var(--surface);
+    border-radius: 100px;
+    padding: 8px 14px;
+    box-shadow: var(--shadow-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .sync-status:active { transform: scale(0.97); }
+  .sync-status.synced { color: var(--success); }
+  .sync-status.syncing { color: var(--accent); }
+  .sync-status.error { color: var(--error); }
+  .sync-status.offline { color: var(--text-muted); }
+  .sync-icon { font-size: 14px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sync-icon.spinning { animation: spin 1s linear infinite; display: inline-block; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    background: var(--surface);
+    padding: 6px;
+    border-radius: 100px;
+    box-shadow: var(--shadow-sm);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    flex: 1;
+    min-width: max-content;
+    padding: 12px 18px;
+    border: none;
+    background: transparent;
+    border-radius: 100px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .tab.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* כרטיסים */
+  .card {
+    background: var(--surface);
+    border-radius: 22px;
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 18px;
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .card h2 {
+    font-size: 21px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card h3 { font-size: 17px; margin-bottom: 12px; }
+
+  /* קטגוריות */
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+  }
+
+  .category-card {
+    background: var(--surface);
+    border-radius: 18px;
+    padding: 22px 18px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 3px solid transparent;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .category-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s;
+  }
+
+  .category-card:active {
+    transform: scale(0.97);
+    border-color: var(--primary);
+  }
+
+  .category-card:active::before {
+    transform: scaleX(1);
+  }
+
+  .category-icon {
+    font-size: 44px;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .category-name {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+
+  .category-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    min-height: 28px;
+  }
+
+  .category-count {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+  }
+
+  .category-stats {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-muted);
+    background: #f8fafc;
+    padding: 4px 10px;
+    border-radius: 100px;
+    display: inline-block;
+  }
+
+  .category-stats.weak { background: #fee2e2; color: #b91c1c; }
+  .category-stats.medium { background: #fef3c7; color: #b45309; }
+  .category-stats.strong { background: #d1fae5; color: #065f46; }
+
+  /* כפתורים */
+  .btn {
+    border: none;
+    padding: 14px 26px;
+    border-radius: 100px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow-sm);
+    min-height: 48px;
+  }
+
+  .btn:active { transform: scale(0.96); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+  }
+
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border: 2px solid var(--border);
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+  }
+
+  .btn-danger {
+    background: linear-gradient(135deg, var(--error), #dc2626);
+    color: white;
+  }
+
+  .btn-large {
+    padding: 18px 34px;
+    font-size: 17px;
+    min-height: 56px;
+  }
+
+  .btn-block { width: 100%; justify-content: center; }
+
+  /* בחירת מצב */
+  .mode-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .mode-btn {
+    background: var(--surface);
+    border: 3px solid var(--border);
+    padding: 16px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: center;
+    transition: all 0.2s;
+    min-height: 100px;
+  }
+
+  .mode-btn:active { transform: scale(0.97); }
+  .mode-btn.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border-color: var(--primary);
+  }
+
+  .mode-icon { font-size: 28px; display: block; margin-bottom: 6px; }
+  .mode-name { font-weight: 700; font-size: 15px; }
+  .mode-desc { font-size: 11px; opacity: 0.8; margin-top: 4px; }
+
+  /* מסך תרגול */
+  .quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px dashed var(--border);
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .quiz-info { display: flex; flex-direction: column; gap: 4px; }
+  .quiz-title { font-size: 18px; font-weight: 700; color: var(--primary); }
+  .quiz-progress-text { font-size: 13px; color: var(--text-muted); }
+
+  .progress-bar {
+    width: 100%;
+    height: 12px;
+    background: var(--bg-3);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 22px;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    border-radius: 100px;
+    transition: width 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  .question-text {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 22px;
+    line-height: 1.5;
+    color: var(--text);
+    padding: 22px;
+    background: linear-gradient(135deg, #f0f9ff, #fef3c7);
+    border-radius: 16px;
+    border-right: 5px solid var(--primary);
+  }
+
+  .options-list { display: grid; gap: 10px; }
+
+  .option-btn {
+    background: var(--surface);
+    border: 3px solid var(--border);
+    padding: 16px 20px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    text-align: right;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text);
+    min-height: 56px;
+    width: 100%;
+  }
+
+  .option-btn:active:not(:disabled) {
+    transform: scale(0.98);
+    border-color: var(--primary);
+    background: #f0f9ff;
+  }
+
+  .option-btn:disabled { cursor: not-allowed; }
+
+  .option-letter {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+
+  .option-btn.correct {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    border-color: var(--success);
+    animation: correctPulse 0.5s;
+  }
+  .option-btn.correct .option-letter {
+    background: linear-gradient(135deg, var(--success), #059669);
+  }
+
+  .option-btn.incorrect {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    border-color: var(--error);
+    animation: shake 0.5s;
+  }
+  .option-btn.incorrect .option-letter {
+    background: linear-gradient(135deg, var(--error), #dc2626);
+  }
+
+  @keyframes correctPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 16px 20px;
+    border-radius: 14px;
+    animation: fadeIn 0.4s;
+  }
+
+  .feedback.correct {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    border-right: 5px solid var(--success);
+  }
+
+  .feedback.incorrect {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    border-right: 5px solid var(--error);
+  }
+
+  .feedback-title { font-weight: 700; margin-bottom: 6px; font-size: 16px; }
+  .feedback-text { color: var(--text); font-size: 14px; }
+
+  .nav-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+
+  /* תוצאות */
+  .results-card { text-align: center; }
+
+  .results-emoji {
+    font-size: 70px;
+    margin-bottom: 14px;
+    animation: bounce 1s;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+
+  .results-score {
+    font-size: 56px;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+    font-family: 'Secular One', sans-serif;
+  }
+
+  .results-percent {
+    font-size: 22px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .results-message {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 22px;
+    padding: 16px;
+    background: var(--bg-2);
+    border-radius: 14px;
+  }
+
+  /* סטטיסטיקה */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .stat-card {
+    background: linear-gradient(135deg, #f0f9ff, #fef3c7);
+    padding: 16px;
+    border-radius: 14px;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--primary);
+    font-family: 'Secular One', sans-serif;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* דוח מפורט */
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+    text-align: right;
+  }
+
+  .review-item {
+    padding: 16px;
+    border-radius: 14px;
+    border-right: 5px solid var(--border);
+    background: #f8fafc;
+  }
+
+  .review-item.correct {
+    border-right-color: var(--success);
+    background: #f0fdf4;
+  }
+
+  .review-item.incorrect {
+    border-right-color: var(--error);
+    background: #fef2f2;
+  }
+
+  .review-q {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+
+  .review-answers {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .review-answers strong { color: var(--text); }
+
+  .review-explain {
+    font-size: 13px;
+    color: var(--text);
+    background: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: 6px;
+  }
+
+  /* היסטוריה */
+  .history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .history-item {
+    padding: 14px 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border-right: 4px solid var(--primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .history-item.high { border-right-color: var(--success); background: #f0fdf4; }
+  .history-item.med { border-right-color: var(--accent); background: #fffbeb; }
+  .history-item.low { border-right-color: var(--error); background: #fef2f2; }
+
+  .history-info { flex: 1; min-width: 150px; }
+  .history-title { font-weight: 700; font-size: 15px; }
+  .history-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  .history-score {
+    background: var(--primary);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .history-score.high { background: var(--success); }
+  .history-score.med { background: var(--accent); }
+  .history-score.low { background: var(--error); }
+
+  /* גרף שיפור */
+  .chart-container {
+    width: 100%;
+    height: 200px;
+    margin: 16px 0;
+    position: relative;
+  }
+
+  .chart-svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* טבלת קטגוריות */
+  .cat-stats {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .cat-stat-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border-radius: 12px;
+  }
+
+  .cat-stat-icon { font-size: 24px; flex-shrink: 0; }
+  .cat-stat-info { flex: 1; min-width: 0; }
+  .cat-stat-name { font-weight: 700; font-size: 14px; }
+
+  .cat-stat-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+
+  .cat-stat-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--error), var(--accent), var(--success));
+    border-radius: 100px;
+    transition: width 0.6s;
+  }
+
+  .cat-stat-percent {
+    font-weight: 700;
+    font-size: 14px;
+    min-width: 50px;
+    text-align: left;
+  }
+
+  /* בית */
+  .home-link {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    min-height: 40px;
+  }
+
+  .home-link:active { background: var(--bg-3); }
+
+  .streak-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    animation: fadeIn 0.2s;
+    padding: 16px;
+  }
+
+  .modal {
+    background: var(--surface);
+    border-radius: 22px;
+    padding: 28px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: var(--shadow-lg);
+    animation: slideDown 0.3s;
+  }
+
+  .modal h2 { margin-bottom: 16px; font-size: 22px; }
+
+  .input-field {
+    width: 100%;
+    padding: 14px 18px;
+    border: 3px solid var(--border);
+    border-radius: 12px;
+    font-size: 16px;
+    font-family: inherit;
+    margin-bottom: 16px;
+  }
+
+  .input-field:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+
+  /* התראות */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted);
+  }
+
+  .empty-state-icon {
+    font-size: 60px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+
+  /* אנימציות */
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hidden { display: none !important; }
+
+  /* התאמה לטאבלט (אנכי) */
+  @media (max-width: 1024px) and (min-width: 600px) {
+    .container { max-width: 100%; padding: 24px; }
+    .question-text { font-size: 22px; padding: 24px; }
+    .option-btn { font-size: 18px; padding: 18px 22px; min-height: 60px; }
+    .btn { padding: 16px 28px; font-size: 17px; min-height: 52px; }
+    .btn-large { min-height: 60px; }
+    .category-card { padding: 26px 22px; }
+    .category-icon { font-size: 50px; }
+  }
+
+  /* מובייל */
+  @media (max-width: 600px) {
+    .container { padding: 16px 12px; }
+    .question-text { font-size: 17px; padding: 16px; }
+    .option-btn { font-size: 15px; padding: 14px 16px; }
+    .results-score { font-size: 44px; }
+    .card { padding: 18px; border-radius: 18px; }
+    .nav-buttons .btn { flex: 1; }
+    h1 { font-size: 26px; }
+  }
+
+  /* Touch ידידותי */
+  @media (hover: none) {
+    .category-card:hover { transform: none; }
+    .btn:hover { transform: none; }
+    .option-btn:hover { transform: none; background: var(--surface); }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>🎯 הכנה למבחן מחוננים</h1>
+    <p class="subtitle">שלב ב' (בר-אילן) • כיתה ג' • 316 שאלות</p>
+  </header>
+
+  <div class="profile-bar">
+    <div class="profile-pill" onclick="openProfileModal()">
+      <div class="profile-avatar" id="profileAvatar">👶</div>
+      <div>
+        <div class="profile-name" id="profileName">לחץ להגדיר שם</div>
+        <div class="profile-edit">✏ עריכה</div>
+      </div>
+    </div>
+    <div class="sync-status" id="syncStatus" onclick="openSyncModal()" title="סטטוס סנכרון">
+      <span class="sync-icon" id="syncIcon">⏳</span>
+      <span class="sync-text" id="syncText">מתחבר...</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="practice" onclick="switchTab('practice')">📚 תרגול</button>
+    <button class="tab" data-tab="dashboard" onclick="switchTab('dashboard')">📊 התקדמות</button>
+    <button class="tab" data-tab="history" onclick="switchTab('history')">📋 היסטוריה</button>
+  </div>
+
+  <!-- TAB: תרגול -->
+  <div id="tab-practice">
+    <!-- מסך בית -->
+    <div id="screen-home">
+      <div class="card">
+        <h2>🎮 בחר מצב תרגול</h2>
+        <div class="mode-selector">
+          <button class="mode-btn active" data-mode="practice" onclick="setMode('practice', this)">
+            <span class="mode-icon">📖</span>
+            <div class="mode-name">תרגול</div>
+            <div class="mode-desc">עם הסברים אחרי כל שאלה</div>
+          </button>
+          <button class="mode-btn" data-mode="exam" onclick="setMode('exam', this)">
+            <span class="mode-icon">📝</span>
+            <div class="mode-name">מבחן</div>
+            <div class="mode-desc">30 שאלות, ללא הסברים</div>
+          </button>
+          <button class="mode-btn" data-mode="random" onclick="setMode('random', this)">
+            <span class="mode-icon">🎲</span>
+            <div class="mode-name">אקראי</div>
+            <div class="mode-desc">20 שאלות מעורבות</div>
+          </button>
+          <button class="mode-btn" data-mode="weak" onclick="setMode('weak', this)">
+            <span class="mode-icon">💪</span>
+            <div class="mode-name">חזק חולשות</div>
+            <div class="mode-desc">שאלות מקטגוריות חלשות</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>📚 בחר קטגוריה</h2>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 12px;">
+          הצבעים מציגים את רמת ההצלחה שלך בקטגוריה
+        </p>
+        <div id="categoriesGrid" class="categories-grid"></div>
+      </div>
+    </div>
+
+    <!-- מסך שאלה -->
+    <div id="screen-quiz" class="hidden">
+      <div class="card">
+        <div class="quiz-header">
+          <div class="quiz-info">
+            <div class="quiz-title" id="quizCategoryName"></div>
+            <div class="quiz-progress-text" id="quizProgressText"></div>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <span id="streakBadge" class="streak-badge hidden">🔥 <span id="streakCount">0</span></span>
+            <button class="home-link" onclick="confirmExit()">🏠 לבית</button>
+          </div>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+
+        <div class="question-text" id="questionText"></div>
+        <div class="options-list" id="optionsList"></div>
+        <div id="feedbackArea"></div>
+
+        <div class="nav-buttons">
+          <button class="btn btn-primary btn-large btn-block" id="nextBtn" onclick="nextQuestion()" disabled>
+            הבא ⬅
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- מסך תוצאות -->
+    <div id="screen-results" class="hidden">
+      <div class="card results-card">
+        <div class="results-emoji" id="resultsEmoji">🎉</div>
+        <div class="results-score" id="resultsScore">0/0</div>
+        <div class="results-percent" id="resultsPercent">0%</div>
+        <div class="results-message" id="resultsMessage"></div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="statCorrect">0</div>
+            <div class="stat-label">תשובות נכונות</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statWrong">0</div>
+            <div class="stat-label">תשובות שגויות</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statTime">0:00</div>
+            <div class="stat-label">זמן כולל</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="statBestStreak">0</div>
+            <div class="stat-label">רצף הכי טוב 🔥</div>
+          </div>
+        </div>
+
+        <div class="nav-buttons" style="justify-content: center;">
+          <button class="btn btn-primary btn-large" onclick="restartQuiz()">🔄 תרגל שוב</button>
+          <button class="btn btn-secondary btn-large" onclick="goHome()">🏠 חזרה</button>
+        </div>
+
+        <h3 style="margin-top: 28px; text-align: right;">📋 דוח מפורט - איפה צדק ואיפה טעה</h3>
+        <div class="review-list" id="reviewList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: התקדמות -->
+  <div id="tab-dashboard" class="hidden">
+    <div class="card">
+      <h2>📊 סיכום כללי</h2>
+      <div class="stats-grid" id="overallStats"></div>
+    </div>
+
+    <div class="card">
+      <h2>📈 גרף שיפור (10 מבחנים אחרונים)</h2>
+      <div class="chart-container" id="chartContainer">
+        <div class="empty-state">
+          <div class="empty-state-icon">📈</div>
+          <p>עוד אין מספיק נתונים</p>
+          <p style="font-size: 13px;">אחרי כמה תרגולים תוצג כאן גרף השיפור</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🎯 רמת הצלחה לפי קטגוריה</h2>
+      <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 8px;">
+        אחוז הצלחה לאורך כל ההיסטוריה - זיהוי נקודות חולשה
+      </p>
+      <div class="cat-stats" id="catStats"></div>
+    </div>
+  </div>
+
+  <!-- TAB: היסטוריה -->
+  <div id="tab-history" class="hidden">
+    <div class="card">
+      <h2>📋 היסטוריית מבחנים</h2>
+      <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">
+        כל המבחנים שנעשו, מהחדש לישן
+      </p>
+      <div class="history-list" id="historyList"></div>
+      <div style="margin-top: 20px; text-align: center;">
+        <button class="btn btn-secondary" onclick="confirmClearHistory()" id="clearHistoryBtn" style="font-size: 13px;">
+          🗑 מחק את כל ההיסטוריה
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: שם הילד -->
+<div id="profileModal" class="modal-overlay hidden" onclick="closeProfileModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h2>👋 מה השם שלך?</h2>
+    <p style="color: var(--text-muted); margin-bottom: 14px; font-size: 14px;">
+      ההתקדמות שלך תישמר לפי השם
+    </p>
+    <input type="text" id="nameInput" class="input-field" placeholder="הכנס שם..." maxlength="20">
+    <div style="display: flex; gap: 10px;">
+      <button class="btn btn-primary btn-block" onclick="saveProfile()">שמור ✓</button>
+      <button class="btn btn-secondary" onclick="closeProfileModal()">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: סנכרון בענן -->
+<div id="syncModal" class="modal-overlay hidden" onclick="closeSyncModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h2>☁️ סנכרון בענן</h2>
+    <p style="color: var(--text-muted); margin-bottom: 14px; font-size: 14px;" id="syncModalDesc">
+      הזן את הקוד האישי כדי לסנכרן בין מחשב וטאבלט
+    </p>
+    <input type="text" id="codeInput" class="input-field" placeholder="קוד אישי (למשל: zussman)" maxlength="30" autocomplete="off" style="direction: ltr; text-align: left;">
+    <div id="syncModalStatus" style="margin-bottom: 12px; font-size: 13px;"></div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <button class="btn btn-primary" style="flex: 1;" onclick="connectSync()">חבר ☁️</button>
+      <button class="btn btn-secondary" onclick="closeSyncModal()">סגור</button>
+    </div>
+    <div id="syncModalDisconnect" class="hidden" style="margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border);">
+      <button class="btn btn-danger btn-block" onclick="disconnectSync()" style="font-size: 14px;">⛔ נתק ועבוד מקומי בלבד</button>
+    </div>
+  </div>
+</div>
+
+<!-- בנק שאלות + לוגיקה -->
+<script>
+// =============================================
+// בנק שאלות (יוטמע כאן בעת המיזוג)
+// =============================================
+// בנק שאלות גדול למבחן מחוננים שלב ב' - כיתה ג'
+// 320+ שאלות ב-7 קטגוריות
+
+const QUESTIONS = {
+  analogies_verbal: {
+    name: "אנלוגיות מילוליות",
+    icon: "🔤",
+    description: "מצא את היחס בין המילים והשלם בהתאם",
+    questions: [
+      // יחסי מקום
+      { q: "ציפור : קן :: דבורה : ?", options: ["פרח", "כוורת", "דבש", "כנף"], answer: 1, explain: "ציפור גרה בקן, דבורה גרה בכוורת" },
+      { q: "רופא : בית חולים :: מורה : ?", options: ["ספר", "תלמיד", "בית ספר", "לוח"], answer: 2, explain: "רופא עובד בבית חולים, מורה עובד בבית ספר" },
+      { q: "דג : מים :: ציפור : ?", options: ["שמיים", "עץ", "אוויר", "ענן"], answer: 2, explain: "דג חי במים, ציפור חיה באוויר" },
+      { q: "מטוס : שמיים :: אונייה : ?", options: ["נמל", "ים", "דייגים", "מפרש"], answer: 1, explain: "מטוס טס בשמיים, אונייה שטה בים" },
+      { q: "אריה : ג'ונגל :: דוב קוטב : ?", options: ["יער", "מדבר", "קוטב", "הר"], answer: 2, explain: "כל חיה במקום מגוריה הטבעי" },
+      { q: "תלמיד : כיתה :: עובד : ?", options: ["משכורת", "משרד", "מנהל", "מחשב"], answer: 1, explain: "תלמיד לומד בכיתה, עובד עובד במשרד" },
+      { q: "שופט : בית משפט :: כומר : ?", options: ["דת", "כנסייה", "תפילה", "מזבח"], answer: 1, explain: "מקום עיסוק" },
+      { q: "פרה : רפת :: סוס : ?", options: ["שדה", "רכיבה", "אורווה", "מרכבה"], answer: 2, explain: "סוסים גרים באורווה" },
+
+      // ניגודים
+      { q: "חם : קר :: יבש : ?", options: ["חום", "רטוב", "קרח", "אש"], answer: 1, explain: "ניגודים: חם-קר, יבש-רטוב" },
+      { q: "גדול : קטן :: רחב : ?", options: ["ארוך", "צר", "גבוה", "כבד"], answer: 1, explain: "ניגודים: גדול-קטן, רחב-צר" },
+      { q: "שמח : עצוב :: מלא : ?", options: ["גדול", "ריק", "שבע", "כבד"], answer: 1, explain: "ניגודים: שמח-עצוב, מלא-ריק" },
+      { q: "אור : חושך :: יום : ?", options: ["שמש", "לילה", "ערב", "בוקר"], answer: 1, explain: "אור-חושך, יום-לילה" },
+      { q: "מהיר : איטי :: חזק : ?", options: ["חלש", "כבד", "גדול", "קשה"], answer: 0, explain: "ניגודים" },
+      { q: "צוחק : בוכה :: זוכר : ?", options: ["חושב", "שוכח", "יודע", "לומד"], answer: 1, explain: "ניגודי פעולות" },
+      { q: "כבד : קל :: יקר : ?", options: ["זול", "טוב", "חדש", "יפה"], answer: 0, explain: "ניגודים" },
+      { q: "פתוח : סגור :: גלוי : ?", options: ["נראה", "נסתר", "ידוע", "ריק"], answer: 1, explain: "ניגודים" },
+      { q: "עשיר : עני :: חכם : ?", options: ["חזק", "טיפש", "צעיר", "עייף"], answer: 1, explain: "ניגודים" },
+
+      // איברי גוף ופעולות
+      { q: "אוזן : שמיעה :: עין : ?", options: ["ראייה", "דמעה", "ריס", "צבע"], answer: 0, explain: "האוזן משמשת לשמיעה, העין לראייה" },
+      { q: "רגל : הליכה :: יד : ?", options: ["אצבע", "תפיסה", "כפפה", "טבעת"], answer: 1, explain: "רגל-הליכה, יד-תפיסה" },
+      { q: "פה : אכילה :: אף : ?", options: ["נשימה", "ריח", "נזלת", "פנים"], answer: 1, explain: "אף משמש לריח" },
+      { q: "שיניים : לעיסה :: לשון : ?", options: ["טעם", "ירוק", "ארוך", "פה"], answer: 0, explain: "תפקיד באיברי הפה" },
+      { q: "רגל : נעל :: יד : ?", options: ["אצבע", "כפפה", "טבעת", "ציפורן"], answer: 1, explain: "נעל לובשים על הרגל, כפפה על היד" },
+      { q: "ראש : כובע :: רגל : ?", options: ["צעדה", "גרב", "ברך", "כלב"], answer: 1, explain: "מה לובשים על האיבר" },
+
+      // צאצאים וקבוצות
+      { q: "גוזל : ציפור :: גור : ?", options: ["חתול", "כלב", "אריה", "סוס"], answer: 2, explain: "גוזל הוא צאצא של ציפור, גור הוא צאצא של אריה" },
+      { q: "תרנגולת : אפרוח :: כבשה : ?", options: ["צמר", "טלה", "רועה", "עדר"], answer: 1, explain: "אם וצאצא" },
+      { q: "פרה : עגל :: כלבה : ?", options: ["כלב", "גור", "חתלתול", "כלבלב"], answer: 1, explain: "אם וצאצא" },
+      { q: "צפרדע : ראשן :: פרפר : ?", options: ["כנף", "פרח", "זחל", "ביצה"], answer: 2, explain: "צאצא של פרפר הוא זחל" },
+      { q: "תרנגול : עוף :: כלב : ?", options: ["חיה", "יונק", "טורף", "חבר"], answer: 1, explain: "תרנגול שייך לקבוצת העופות, כלב לקבוצת היונקים" },
+
+      // כלי עבודה ופונקציה
+      { q: "מספריים : גזירה :: פטיש : ?", options: ["מסמר", "הקשה", "ברזל", "נגר"], answer: 1, explain: "מספריים משמשים לגזירה, פטיש להקשה" },
+      { q: "ספר : קריאה :: עיפרון : ?", options: ["מחק", "כתיבה", "נייר", "מחדד"], answer: 1, explain: "ספר משמש לקריאה, עיפרון לכתיבה" },
+      { q: "צייר : מכחול :: סופר : ?", options: ["ספר", "עט", "שולחן", "מילים"], answer: 1, explain: "הצייר משתמש במכחול, הסופר בעט" },
+      { q: "פטיש : מסמר :: מפתח : ?", options: ["דלת", "מנעול", "בית", "ידית"], answer: 1, explain: "פטיש מתאים למסמר, מפתח למנעול" },
+      { q: "מסור : עץ :: סכין : ?", options: ["שולחן", "מטבח", "לחם", "חיתוך"], answer: 2, explain: "מה הכלי חותך" },
+      { q: "מטאטא : ניקיון :: מגרסה : ?", options: ["נייר", "גריסה", "קופסה", "משרד"], answer: 1, explain: "תפקיד הכלי" },
+
+      // טעם ותכונה
+      { q: "סוכר : מתוק :: לימון : ?", options: ["צהוב", "חמוץ", "פרי", "קטן"], answer: 1, explain: "סוכר טעמו מתוק, לימון טעמו חמוץ" },
+      { q: "מלח : מלוח :: דבש : ?", options: ["צהוב", "מתוק", "דבורים", "סמיך"], answer: 1, explain: "טעם" },
+      { q: "פלפל : חריף :: קפה : ?", options: ["חום", "מר", "חם", "בוקר"], answer: 1, explain: "טעם" },
+
+      // קבוצות וסוגים
+      { q: "תפוח : פרי :: גזר : ?", options: ["כתום", "ירק", "אוכל", "ארנב"], answer: 1, explain: "תפוח הוא פרי, גזר הוא ירק" },
+      { q: "ורד : פרח :: אלון : ?", options: ["יער", "צל", "עץ", "ענף"], answer: 2, explain: "ורד הוא סוג פרח, אלון הוא סוג עץ" },
+      { q: "כנרת : ים :: ירדן : ?", options: ["מים", "נהר", "גשר", "צפון"], answer: 1, explain: "סיווג גוף מים" },
+      { q: "עברית : שפה :: שחור : ?", options: ["צבע", "כהה", "לילה", "פחם"], answer: 0, explain: "שפה וצבע - קטגוריות" },
+
+      // עונות וזמן
+      { q: "חורף : גשם :: קיץ : ?", options: ["חום", "שמש", "ים", "חופש"], answer: 1, explain: "החורף מאופיין בגשם, הקיץ בשמש" },
+      { q: "שמש : יום :: ירח : ?", options: ["כוכב", "לילה", "שמיים", "אור"], answer: 1, explain: "השמש זורחת ביום, הירח בלילה" },
+      { q: "אביב : פריחה :: סתיו : ?", options: ["שלכת", "גשם", "עננים", "קור"], answer: 0, explain: "מאפיין העונה" },
+
+      // סוגי בעלי חיים
+      { q: "אריה : טורף :: ארנב : ?", options: ["שעיר", "מהיר", "צמחוני", "קטן"], answer: 2, explain: "אריה הוא טורף, ארנב הוא צמחוני" },
+      { q: "דבורה : עוקצת :: נחש : ?", options: ["מתעקל", "מצליף", "מכיש", "נושך"], answer: 2, explain: "פעולת ההתקפה" },
+
+      // יחסים בין מילים
+      { q: "מילה : משפט :: אות : ?", options: ["דף", "מילה", "ספר", "צליל"], answer: 1, explain: "ממילים בונים משפט, מאותיות בונים מילה" },
+      { q: "פרק : ספר :: סצנה : ?", options: ["במאי", "סרט", "תיאטרון", "שחקן"], answer: 1, explain: "חלק מתוך שלם" },
+      { q: "אצבע : יד :: עלה : ?", options: ["צבע", "ענף", "עץ", "ירוק"], answer: 1, explain: "חלק מתוך שלם" },
+      { q: "מטבע : ארנק :: ספר : ?", options: ["דף", "סופר", "ספרייה", "תיק"], answer: 3, explain: "פריט וכלי החזקה" },
+      { q: "תרנגולת : ביצה :: פרה : ?", options: ["חלב", "שדה", "עגל", "חציר"], answer: 0, explain: "תרנגולת מטילה ביצה, פרה נותנת חלב" }
+    ]
+  },
+
+  analogies_visual: {
+    name: "אנלוגיות צורניות",
+    icon: "🔷",
+    description: "מצא את החוקיות הצורנית והשלם",
+    questions: [
+      { q: "🔴🔴 הוא ל- 🔵🔵 כמו 🔴🔴🔴 הוא ל- ?", options: ["🔵", "🔵🔵", "🔵🔵🔵", "🔵🔵🔵🔵"], answer: 2, explain: "אותו מספר עיגולים, רק בצבע שונה" },
+      { q: "▲ הוא ל- ▼ כמו ◀ הוא ל- ?", options: ["▶", "▲", "◆", "■"], answer: 0, explain: "סיבוב של 180 מעלות (היפוך)" },
+      { q: "■ הוא ל- ■■ כמו ● הוא ל- ?", options: ["●", "●●", "●●●", "■"], answer: 1, explain: "הצורה מוכפלת" },
+      { q: "🔺 קטן הוא ל- 🔺 גדול כמו ⭐ קטן הוא ל- ?", options: ["⭐ קטן", "⭐ גדול", "🔺", "כוכב שונה"], answer: 1, explain: "הצורה גדלה" },
+      { q: "□□□ הוא ל- ■■■ כמו ○○○ הוא ל- ?", options: ["○○○", "●●●", "○●○", "■■■"], answer: 1, explain: "ריק הופך למלא" },
+      { q: "→ הוא ל- ← כמו ↑ הוא ל- ?", options: ["→", "↓", "←", "↗"], answer: 1, explain: "היפוך כיוון החץ" },
+      { q: "🟦🟥🟦 הוא ל- 🟥🟦🟥 כמו 🟢🟡🟢 הוא ל- ?", options: ["🟢🟡🟢", "🟡🟢🟡", "🟢🟢🟢", "🟡🟡🟡"], answer: 1, explain: "החלפת הצבעים במיקומים" },
+      { q: "🔴🔵🟢 הוא ל- 🟢🔵🔴 כמו 1️⃣2️⃣3️⃣ הוא ל- ?", options: ["1️⃣2️⃣3️⃣", "3️⃣2️⃣1️⃣", "2️⃣1️⃣3️⃣", "1️⃣3️⃣2️⃣"], answer: 1, explain: "היפוך הסדר" },
+      { q: "○ הוא ל- ◐ כמו ◐ הוא ל- ?", options: ["○", "●", "◑", "◯"], answer: 1, explain: "התקדמות במילוי הצורה" },
+      { q: "▲▲ הוא ל- ▲ כמו ●●● הוא ל- ?", options: ["●", "●●", "●●●●", "○"], answer: 1, explain: "הורדת אחד" },
+      { q: "🔲 קטן הוא ל- 🔲🔲 כמו 🔵 הוא ל- ?", options: ["🔵", "🔵🔵", "🔵🔵🔵", "⚫"], answer: 1, explain: "הכפלה" },
+      { q: "↗ הוא ל- ↙ כמו ↘ הוא ל- ?", options: ["↗", "↙", "↖", "→"], answer: 2, explain: "סיבוב של 180 מעלות" },
+      { q: "🟥 הוא ל- 🟧🟥🟧 כמו 🟦 הוא ל- ?", options: ["🟦", "🟩🟦🟩", "🟦🟦🟦", "🟪"], answer: 1, explain: "הצורה ממורכזת בין שתי צורות אחרות" },
+      { q: "△ הוא ל- ▲ כמו □ הוא ל- ?", options: ["□", "■", "○", "●"], answer: 1, explain: "ריק הופך למלא" },
+      { q: "🔴🔴🔵 הוא ל- 🔵🔴🔴 כמו 🟢🟢🟡 הוא ל- ?", options: ["🟢🟢🟡", "🟡🟢🟢", "🟢🟡🟢", "🟡🟡🟢"], answer: 1, explain: "האחרון עובר להיות הראשון" },
+      { q: "● גדול הוא ל- ●● קטנים כמו ■ גדול הוא ל- ?", options: ["■", "■■", "▢", "□"], answer: 1, explain: "אחד גדול הופך לשניים קטנים" },
+      { q: "🔺🔻 הוא ל- 🔻🔺 כמו 🔵🔴 הוא ל- ?", options: ["🔵🔴", "🔴🔵", "🔵🔵", "🔴🔴"], answer: 1, explain: "החלפת מקום" },
+      { q: "○○ הוא ל- ●● כמו □□ הוא ל- ?", options: ["○○", "■■", "□□", "●●"], answer: 1, explain: "ריקות הופכות למלאות" },
+      { q: "1 חץ → הוא ל- 2 חצים →→ כמו 1 כוכב ⭐ הוא ל- ?", options: ["⭐", "⭐⭐", "⭐⭐⭐", "🔵"], answer: 1, explain: "הכפלת המספר" },
+      { q: "🟥🟦 הוא ל- 🟦🟦🟦🟥🟥🟥 כמו 🟢🟡 הוא ל- ?", options: ["🟢🟡", "🟡🟡🟡🟢🟢🟢", "🟢🟢🟡🟡", "🟡🟢🟡🟢"], answer: 1, explain: "כל צבע משולש ובהיפוך סדר" },
+      { q: "↑↑↑ הוא ל- ↓↓↓ כמו →→ הוא ל- ?", options: ["→→", "←←", "↑↑", "↓↓"], answer: 1, explain: "היפוך כיוון" },
+      { q: "🔴🔵🔴🔵 הבא בסדרה?", options: ["🔴", "🔵", "🟢", "🟡"], answer: 0, explain: "מתחלפים בקביעות" },
+      { q: "○●○●○ הבא בסדרה?", options: ["○", "●", "□", "■"], answer: 1, explain: "מתחלפים מלא-ריק" },
+      { q: "▲ הוא ל- ▲▲▲ כמו ■ הוא ל- ?", options: ["■", "■■", "■■■", "■■■■"], answer: 2, explain: "שילוש כמות" },
+      { q: "🔵 → ⚫ כמו 🟢 → ?", options: ["🟢", "⚫", "🟡", "🔵"], answer: 1, explain: "צבע הופך לשחור" },
+      { q: "▲ ◀ ▼ ▶ הבא?", options: ["▲", "◀", "▼", "▶"], answer: 0, explain: "סיבוב 90° כל פעם, חוזר להתחלה" },
+      { q: "🟥🟧🟨🟩 הבא?", options: ["🟦", "🟥", "🟧", "🟫"], answer: 0, explain: "סדר הקשת - אחרי ירוק בא כחול" },
+      { q: "● ●● ●●● ?", options: ["●", "●●", "●●●●", "○"], answer: 2, explain: "הוספה של אחד" },
+      { q: "■ □ ■ □ הבא?", options: ["■", "□", "▲", "○"], answer: 0, explain: "סדר מתחלף, חוזר ל-■" },
+      { q: "🔺🔻🔺🔻 הבא?", options: ["🔺", "🔻", "🔵", "🟢"], answer: 0, explain: "מתחלפים, חוזר ל-🔺" },
+      { q: "🟦 = 1 קווי, 🟦🟦 = 2 קווים. 🟦🟦🟦 = ?", options: ["1 קו", "2 קווים", "3 קווים", "4 קווים"], answer: 2, explain: "כל ריבוע = קו" },
+      { q: "→→← הוא ל- ←←→ כמו ↑↑↓ הוא ל- ?", options: ["↑↑↑", "↓↓↑", "↑↓↑", "↓↓↓"], answer: 1, explain: "היפוך כל החצים" },
+      { q: "🔴 קטן ⬅ 🔴🔴 בינוניים ⬅ 🔴🔴🔴 ?", options: ["שווים", "גדולים", "קטנים", "אדומים"], answer: 1, explain: "ככל שיותר - יותר גדולים" },
+      { q: "▢ ▣ ▤ הבא בסדרה (מילוי גובר)?", options: ["▤", "▥", "▦", "▧"], answer: 0, explain: "מילוי גובר" },
+      { q: "🟦🟦🟥 הוא ל- 🟦🟥🟦 כמו 🟢🟢🟡 הוא ל- ?", options: ["🟡🟢🟢", "🟢🟡🟢", "🟢🟡🟡", "🟡🟡🟢"], answer: 1, explain: "האמצעי מתחלף" },
+      { q: "5 צלעות 🔷 הוא ל- 6 צלעות ⬡ כמו 3 צלעות △ הוא ל- ?", options: ["△", "□ (4 צלעות)", "○ (0 צלעות)", "🔷 (5 צלעות)"], answer: 1, explain: "הוספה של צלע" },
+      { q: "🟥🟦🟥🟦🟥 - הבא?", options: ["🟥", "🟦", "🟢", "🟡"], answer: 1, explain: "מתחלפים אדום-כחול" },
+      { q: "○●●○●●○●● הבא?", options: ["○", "●", "□", "■"], answer: 0, explain: "תבנית 1-2-1-2: אחרי שתי מלאות באה ריקה" },
+      { q: "△→ ▲→ □→ ?", options: ["□", "■", "○", "●"], answer: 1, explain: "כל צורה ריקה הופכת למלאה" },
+      { q: "סדרה: 1 פס | , 2 פסים || , 3 פסים ||| , ? ", options: ["||", "|||", "||||", "|"], answer: 2, explain: "הוספה של פס בכל פעם" }
+    ]
+  },
+  number_series: {
+    name: "סדרות מספרים",
+    icon: "🔢",
+    description: "מצא את החוקיות והשלם את המספר החסר",
+    questions: [
+      // הוספה קבועה
+      { q: "2, 4, 6, 8, ?", options: ["9", "10", "11", "12"], answer: 1, explain: "הוספה של 2 בכל פעם" },
+      { q: "5, 10, 15, 20, ?", options: ["22", "23", "25", "30"], answer: 2, explain: "הוספה של 5 בכל פעם" },
+      { q: "1, 3, 5, 7, ?", options: ["8", "9", "10", "11"], answer: 1, explain: "מספרים אי-זוגיים, הוספה של 2" },
+      { q: "3, 6, 9, 12, ?", options: ["13", "14", "15", "18"], answer: 2, explain: "הוספה של 3 בכל פעם" },
+      { q: "4, 8, 12, 16, ?", options: ["18", "20", "22", "24"], answer: 1, explain: "הוספה של 4" },
+      { q: "10, 15, 20, 25, ?", options: ["28", "30", "32", "35"], answer: 1, explain: "הוספה של 5" },
+      { q: "7, 14, 21, 28, ?", options: ["32", "33", "35", "36"], answer: 2, explain: "כפולות של 7" },
+      { q: "6, 12, 18, 24, ?", options: ["28", "30", "32", "36"], answer: 1, explain: "כפולות של 6" },
+      { q: "9, 18, 27, 36, ?", options: ["42", "44", "45", "48"], answer: 2, explain: "כפולות של 9" },
+      { q: "8, 16, 24, 32, ?", options: ["38", "40", "42", "48"], answer: 1, explain: "כפולות של 8" },
+      { q: "11, 22, 33, 44, ?", options: ["50", "55", "66", "44"], answer: 1, explain: "כפולות של 11" },
+      { q: "1, 4, 7, 10, 13, ?", options: ["14", "15", "16", "17"], answer: 2, explain: "הוספה של 3 בכל פעם" },
+      { q: "2, 5, 8, 11, ?", options: ["12", "13", "14", "15"], answer: 2, explain: "הוספה של 3 בכל פעם" },
+
+      // הורדה
+      { q: "20, 18, 16, 14, ?", options: ["10", "11", "12", "13"], answer: 2, explain: "הורדה של 2 בכל פעם" },
+      { q: "100, 90, 80, 70, ?", options: ["50", "55", "60", "65"], answer: 2, explain: "הורדה של 10 בכל פעם" },
+      { q: "50, 45, 40, 35, ?", options: ["25", "28", "30", "32"], answer: 2, explain: "הורדה של 5 בכל פעם" },
+      { q: "60, 50, 40, 30, ?", options: ["10", "15", "20", "25"], answer: 2, explain: "הורדה של 10 בכל פעם" },
+      { q: "30, 27, 24, 21, ?", options: ["17", "18", "19", "20"], answer: 1, explain: "הורדה של 3" },
+      { q: "40, 35, 30, 25, ?", options: ["18", "20", "22", "24"], answer: 1, explain: "הורדה של 5" },
+      { q: "100, 88, 76, 64, ?", options: ["50", "52", "54", "56"], answer: 1, explain: "הורדה של 12" },
+
+      // הכפלה/חלוקה
+      { q: "1, 2, 4, 8, ?", options: ["10", "12", "14", "16"], answer: 3, explain: "הכפלה ב-2 בכל פעם" },
+      { q: "10, 20, 40, 80, ?", options: ["100", "120", "140", "160"], answer: 3, explain: "הכפלה ב-2 בכל פעם" },
+      { q: "2, 4, 8, 16, 32, ?", options: ["48", "60", "64", "72"], answer: 2, explain: "הכפלה ב-2 בכל פעם" },
+      { q: "5, 10, 20, 40, ?", options: ["60", "70", "80", "100"], answer: 2, explain: "הכפלה ב-2 בכל פעם" },
+      { q: "3, 6, 12, 24, ?", options: ["36", "42", "48", "60"], answer: 2, explain: "הכפלה ב-2" },
+      { q: "1, 3, 9, 27, ?", options: ["54", "72", "81", "100"], answer: 2, explain: "הכפלה ב-3" },
+      { q: "2, 6, 18, 54, ?", options: ["108", "162", "180", "216"], answer: 1, explain: "הכפלה ב-3 בכל פעם" },
+      { q: "81, 27, 9, 3, ?", options: ["0", "1", "2", "3"], answer: 1, explain: "חלוקה ב-3 בכל פעם" },
+      { q: "100, 50, 25, ?", options: ["10", "12.5", "15", "20"], answer: 1, explain: "חלוקה ב-2 בכל פעם" },
+      { q: "64, 32, 16, 8, ?", options: ["2", "4", "6", "0"], answer: 1, explain: "חלוקה ב-2" },
+
+      // ריבועים וחזקות
+      { q: "1, 4, 9, 16, ?", options: ["20", "23", "25", "30"], answer: 2, explain: "מספרים בריבוע: 1², 2², 3², 4², 5²" },
+      { q: "1, 4, 9, 16, 25, ?", options: ["32", "36", "40", "49"], answer: 1, explain: "ריבועים: 6²=36" },
+      { q: "1, 8, 27, 64, ?", options: ["100", "115", "125", "150"], answer: 2, explain: "מספרים בחזקת 3: 1³, 2³, 3³, 4³, 5³" },
+
+      // סדרות מורכבות
+      { q: "1, 1, 2, 3, 5, ?", options: ["7", "8", "9", "10"], answer: 1, explain: "סדרת פיבונאצ'י - כל מספר הוא סכום שני קודמיו" },
+      { q: "1, 2, 4, 7, 11, ?", options: ["14", "15", "16", "17"], answer: 2, explain: "הוספה של 1,2,3,4,5 (גדל ב-1 כל פעם)" },
+      { q: "1, 3, 6, 10, 15, ?", options: ["18", "19", "20", "21"], answer: 3, explain: "הוספה של 2,3,4,5,6 (גדל ב-1 כל פעם)" },
+      { q: "2, 3, 5, 8, 12, ?", options: ["15", "16", "17", "18"], answer: 2, explain: "הוספה הולכת וגדלה: +1, +2, +3, +4, +5" },
+      { q: "11, 13, 17, 19, 23, ?", options: ["25", "27", "29", "31"], answer: 2, explain: "מספרים ראשוניים" },
+      { q: "0, 1, 1, 2, 3, 5, 8, ?", options: ["11", "13", "12", "10"], answer: 1, explain: "פיבונאצ'י: 5+8=13" },
+      { q: "20, 19, 17, 14, 10, ?", options: ["3", "5", "6", "7"], answer: 1, explain: "הורדה גדלה: -1,-2,-3,-4,-5" },
+
+      // סדרות עם דילוגים
+      { q: "1, 2, 4, 5, 7, 8, ?", options: ["9", "10", "11", "12"], answer: 1, explain: "+1, +2, +1, +2..." },
+      { q: "10, 12, 11, 13, 12, 14, ?", options: ["12", "13", "15", "16"], answer: 1, explain: "+2, -1, +2, -1..." },
+      { q: "2, 4, 3, 6, 5, 10, ?", options: ["8", "9", "11", "12"], answer: 1, explain: "×2, -1, ×2, -1..." },
+
+      // סדרות ירידה ועלייה
+      { q: "100, 50, 60, 30, 40, ?", options: ["10", "20", "50", "60"], answer: 1, explain: "÷2, +10, ÷2, +10..." },
+      { q: "1, 10, 2, 9, 3, 8, ?", options: ["4", "5", "7", "11"], answer: 0, explain: "מתחלפים: 1,2,3,4 ו-10,9,8,7" },
+
+      // סדרות עם הוספה משתנה
+      { q: "5, 7, 10, 14, 19, ?", options: ["23", "24", "25", "27"], answer: 2, explain: "הוספה גדלה: +2, +3, +4, +5, +6" },
+      { q: "2, 5, 11, 23, 47, ?", options: ["89", "94", "95", "100"], answer: 2, explain: "כפול 2 ועוד 1" },
+      { q: "3, 4, 7, 11, 18, ?", options: ["25", "27", "29", "30"], answer: 2, explain: "סכום שני קודמים" }
+    ]
+  },
+
+  math_word: {
+    name: "חשיבה מתמטית",
+    icon: "➕",
+    description: "בעיות מילוליות במתמטיקה",
+    questions: [
+      // חיבור פשוט
+      { q: "לדני 5 תפוחים. הוא קיבל מאמא עוד 7 תפוחים. כמה תפוחים יש לו עכשיו?", options: ["10", "11", "12", "13"], answer: 2, explain: "5 + 7 = 12" },
+      { q: "במגרש משחקים יש 8 כדורי כדורגל ו-7 כדורי כדורסל. כמה כדורים בסך הכל?", options: ["13", "14", "15", "16"], answer: 2, explain: "8 + 7 = 15" },
+      { q: "ביום שני קראתי 12 עמודים, ביום שלישי 15. כמה עמודים קראתי בסה\"כ?", options: ["25", "26", "27", "28"], answer: 2, explain: "12 + 15 = 27" },
+      { q: "במקרר 4 בקבוקי חלב, 6 בקבוקי מיץ ו-3 בקבוקי מים. כמה בקבוקים בסה\"כ?", options: ["11", "12", "13", "14"], answer: 2, explain: "4+6+3=13" },
+      { q: "אורי אסף 17 צדפים בים, ואחותו אספה 13. כמה צדפים אספו יחד?", options: ["28", "29", "30", "31"], answer: 2, explain: "17+13=30" },
+
+      // חיסור פשוט
+      { q: "בכיתה 24 תלמידים. 9 מהם בנים. כמה בנות יש בכיתה?", options: ["13", "14", "15", "16"], answer: 2, explain: "24 - 9 = 15" },
+      { q: "אבא בן 35, הבן בן 8. בכמה אבא מבוגר מהבן?", options: ["25", "27", "28", "30"], answer: 1, explain: "35 - 8 = 27" },
+      { q: "במשחק יש 50 שלבים. השלמתי 35 שלבים. כמה שלבים נותרו?", options: ["10", "12", "15", "20"], answer: 2, explain: "50 - 35 = 15" },
+      { q: "מירי קנתה ספר ב-30 ש\"ח ועיפרון ב-5 ש\"ח. שילמה במאה. כמה עודף תקבל?", options: ["55", "60", "65", "70"], answer: 2, explain: "30+5=35, 100-35=65" },
+      { q: "בארגז היו 80 פירות. אכלו 27. כמה נשארו?", options: ["50", "53", "55", "57"], answer: 1, explain: "80-27=53" },
+
+      // כפל פשוט
+      { q: "בקופסה 6 שקיות, ובכל שקית 4 סוכריות. כמה סוכריות בסך הכל?", options: ["20", "22", "24", "28"], answer: 2, explain: "6 × 4 = 24" },
+      { q: "בגן יש 4 שורות של פרחים, ובכל שורה 6 פרחים. כמה פרחים יש בגן?", options: ["10", "20", "24", "28"], answer: 2, explain: "4 × 6 = 24" },
+      { q: "לעוגה צריך 3 ביצים. כמה ביצים נצטרך ל-4 עוגות?", options: ["7", "10", "12", "15"], answer: 2, explain: "3 × 4 = 12" },
+      { q: "במגרש 5 קבוצות, ובכל קבוצה 7 שחקנים. כמה שחקנים בסה\"כ?", options: ["30", "33", "35", "40"], answer: 2, explain: "5 × 7 = 35" },
+      { q: "מחיר ספר 25 ש\"ח. כמה יעלו 3 ספרים?", options: ["65", "70", "75", "80"], answer: 2, explain: "25 × 3 = 75" },
+      { q: "ביום אחד פועל מייצר 8 כיסאות. כמה ייצר ב-7 ימים?", options: ["48", "54", "56", "63"], answer: 2, explain: "8×7=56" },
+      { q: "במחברת 9 דפים. כמה דפים יש ב-6 מחברות?", options: ["52", "54", "56", "60"], answer: 1, explain: "9×6=54" },
+
+      // חילוק
+      { q: "אמא חילקה 20 עוגיות בין 4 ילדים בשווה. כמה עוגיות קיבל כל ילד?", options: ["3", "4", "5", "6"], answer: 2, explain: "20 ÷ 4 = 5" },
+      { q: "בכיתה 28 תלמידים. הם התחלקו ל-4 קבוצות שוות. כמה תלמידים בכל קבוצה?", options: ["5", "6", "7", "8"], answer: 2, explain: "28 ÷ 4 = 7" },
+      { q: "סוכריה עולה 2 ש\"ח. כמה סוכריות אפשר לקנות ב-18 ש\"ח?", options: ["7", "8", "9", "10"], answer: 2, explain: "18 ÷ 2 = 9" },
+      { q: "אם 4 ילדים אכלו 12 פיצות, כמה פיצות אכל כל ילד בממוצע?", options: ["2", "3", "4", "6"], answer: 1, explain: "12 ÷ 4 = 3" },
+      { q: "ל-36 תלמידים יש 6 שולחנות שווים. כמה תלמידים בכל שולחן?", options: ["5", "6", "7", "8"], answer: 1, explain: "36÷6=6" },
+      { q: "אבא קנה 45 גרגירי שוקולד וחילק שווה ל-5 ילדים. כמה קיבל כל ילד?", options: ["7", "8", "9", "10"], answer: 2, explain: "45÷5=9" },
+
+      // שעות וזמן
+      { q: "סרט מתחיל בשעה 4 וחצי ונמשך שעה ורבע. באיזו שעה הסרט מסתיים?", options: ["5:45", "5:30", "5:15", "6:00"], answer: 0, explain: "4:30 + 1:15 = 5:45" },
+      { q: "אוטובוס יוצא בשעה 7:00 ונוסע 45 דקות. באיזו שעה הוא יגיע?", options: ["7:30", "7:45", "8:00", "8:15"], answer: 1, explain: "7:00 + 45 דקות = 7:45" },
+      { q: "השעה 9:30. בעוד 90 דקות מה תהיה השעה?", options: ["10:30", "10:45", "11:00", "11:30"], answer: 2, explain: "90 דקות = 1.5 שעות, 9:30+1:30=11:00" },
+      { q: "מורה התחיל שיעור ב-8:15 וסיים ב-9:00. כמה זמן ארך השיעור?", options: ["30 דק'", "40 דק'", "45 דק'", "50 דק'"], answer: 2, explain: "9:00 פחות 8:15 = 45 דקות" },
+      { q: "הסרט נמשך 90 דקות. כמה זה בשעות ודקות?", options: ["1 שעה", "1.5 שעות", "2 שעות", "1 שעה ו-15 דק'"], answer: 1, explain: "90 דק = שעה וחצי" },
+
+      // ימי שבוע
+      { q: "אם היום יום שלישי, איזה יום יהיה בעוד 5 ימים?", options: ["שבת", "ראשון", "שני", "ראשון"], answer: 1, explain: "ג→ד→ה→ו→ש→א" },
+      { q: "אם היום יום שישי, איזה יום היה לפני 4 ימים?", options: ["שני", "שלישי", "רביעי", "חמישי"], answer: 0, explain: "ו→ה→ד→ג→ב, יום שני" },
+
+      // בעיות מילוליות מורכבות יותר
+      { q: "ליואב 3 שקיות, ובכל שקית 5 גולות. הוא איבד 2 גולות. כמה גולות נשארו לו?", options: ["12", "13", "14", "15"], answer: 1, explain: "3×5=15, 15-2=13" },
+      { q: "לדנה 18 ש\"ח. אחיה נתן לה כפול מזה. כמה כסף יש לה עכשיו?", options: ["36", "44", "54", "60"], answer: 2, explain: "18+(18×2)=18+36=54" },
+      { q: "השלולית גדלה כל יום ב-3 ס\"מ. בהתחלה 5 ס\"מ. אחרי 4 ימים?", options: ["12", "15", "17", "20"], answer: 2, explain: "5+(3×4)=5+12=17" },
+      { q: "בכיתה 30 ילדים, חצי בנים. כמה בנות?", options: ["10", "12", "15", "20"], answer: 2, explain: "30÷2=15" },
+      { q: "תפוח עולה 2 ש\"ח. אם קניתי 6 ושילמתי ב-20, כמה עודף קיבלתי?", options: ["6", "7", "8", "10"], answer: 2, explain: "6×2=12, 20-12=8" },
+      { q: "בכיתה 25 תלמידים. 3/5 הם בנות. כמה בנות?", options: ["10", "12", "15", "18"], answer: 2, explain: "25÷5=5, 5×3=15" },
+
+      // מספר חצי תריסר ושברים פשוטים
+      { q: "מספר חצי תריסר ביצים זה?", options: ["3", "5", "6", "12"], answer: 2, explain: "תריסר=12, חצי תריסר=6" },
+      { q: "מחצית מ-40 הוא?", options: ["10", "15", "20", "25"], answer: 2, explain: "40 ÷ 2 = 20" },
+      { q: "רבע מ-100 הוא?", options: ["20", "25", "30", "50"], answer: 1, explain: "100 ÷ 4 = 25" },
+      { q: "שליש מ-30 הוא?", options: ["8", "9", "10", "12"], answer: 2, explain: "30÷3=10" },
+      { q: "שלושה רבעים מ-20 הם?", options: ["10", "12", "15", "16"], answer: 2, explain: "20÷4=5, 5×3=15" },
+
+      // השוואות וגיל
+      { q: "אם רותם בת 8 ואחיה גדול ממנה ב-3 שנים, בן כמה אחיה?", options: ["10", "11", "12", "13"], answer: 1, explain: "8+3=11" },
+      { q: "סבתא בת 60. בעוד 5 שנים בן כמה תהיה?", options: ["62", "63", "65", "66"], answer: 2, explain: "60+5=65" },
+      { q: "תאומים נולדו ב-2018. בן כמה הם ב-2026?", options: ["6", "7", "8", "9"], answer: 2, explain: "2026-2018=8" },
+
+      // כסף
+      { q: "סוכריה עולה 3 ש\"ח. גלידה עולה כפול. ביחד?", options: ["6", "7", "8", "9"], answer: 3, explain: "3+(3×2)=3+6=9" },
+      { q: "תיק עולה 80 ש\"ח. בהנחה של 20 ש\"ח. כמה אשלם?", options: ["50", "55", "60", "70"], answer: 2, explain: "80-20=60" },
+
+      // אורך וגובה
+      { q: "מטר אחד = 100 ס\"מ. כמה ס\"מ ב-3 מטר?", options: ["100", "200", "300", "400"], answer: 2, explain: "3×100=300" },
+      { q: "כדור עף 25 מטר ראשונה ו-30 מטר שניה. סה\"כ?", options: ["50", "55", "60", "65"], answer: 1, explain: "25+30=55" }
+    ]
+  },
+  logic: {
+    name: "חשיבה לוגית",
+    icon: "🧩",
+    description: "הסקת מסקנות וחשיבה לוגית",
+    questions: [
+      // היסקים פשוטים
+      { q: "כל הכלבים נובחים. רקס הוא כלב. אז רקס...", options: ["נוהם", "נובח", "מיילל", "שותק"], answer: 1, explain: "אם כל הכלבים נובחים ורקס כלב, אז רקס נובח" },
+      { q: "כל הציפורים יודעות לעוף. תרנגול הוא ציפור. האם תרנגול עף?", options: ["כן, לפי ההיגיון", "לא, תרנגולים לא עפים", "תלוי בגיל", "לא ידוע"], answer: 0, explain: "לפי ההיגיון של ההיגד - כן" },
+      { q: "אם כל הילדים בכיתה אוהבים גלידה, ויואב בכיתה, אז יואב...", options: ["שונא גלידה", "אוהב גלידה", "לא אוכל גלידה", "אוהב עוגה"], answer: 1, explain: "אם כל הילדים אוהבים גלידה ויואב בכיתה, יואב אוהב גלידה" },
+      { q: "כל המכוניות יש 4 גלגלים. ל'מכונית X' יש 3 גלגלים. האם זה מכונית?", options: ["כן בטוח", "לא, לפי ההגדרה", "אולי", "כן, מכונית מיוחדת"], answer: 1, explain: "אם ההגדרה היא 4 גלגלים - 3 גלגלים לא מתאים" },
+      { q: "כל המשולשים יש להם 3 צלעות. הצורה הזו יש לה 3 צלעות. האם היא משולש?", options: ["בהכרח כן", "בהכרח לא", "אולי כן ואולי לא", "אי אפשר לדעת"], answer: 0, explain: "אם לכל הצורות שיש להן 3 צלעות הן משולשים - כן" },
+      { q: "כל החתולים שלי שחורים. למקס יש פרווה לבנה. האם מקס החתול שלי?", options: ["כן", "לא", "אולי", "בטוח"], answer: 1, explain: "אם כל החתולים שלי שחורים, מקס שהוא לבן לא יכול להיות שלי" },
+      { q: "כל הפרחים יפים. ורד הוא פרח. אז ורד...", options: ["מסריח", "יפה", "אדום", "קוצני"], answer: 1, explain: "ורד יפה" },
+
+      // טרנזיטיביות
+      { q: "דני גבוה מיוסי. יוסי גבוה ממאיר. מי הכי גבוה?", options: ["דני", "יוסי", "מאיר", "אי אפשר לדעת"], answer: 0, explain: "דני > יוסי > מאיר, אז דני הכי גבוה" },
+      { q: "אם A>B ו-B>C, אז A הוא...", options: ["שווה ל-C", "קטן מ-C", "גדול מ-C", "לא ידוע"], answer: 2, explain: "טרנזיטיביות" },
+      { q: "מירי גרה בקומה גבוהה יותר מדן. דן גר מתחת לרון. מי גר הכי נמוך?", options: ["מירי", "דן", "רון", "אי אפשר לדעת"], answer: 1, explain: "מירי>דן, רון>דן, אז דן הכי נמוך" },
+      { q: "תם הכי גבוה. נטע יותר נמוכה מנועם. נועם יותר נמוכה מתם. מי באמצע?", options: ["תם", "נועם", "נטע", "כולם שווים"], answer: 1, explain: "תם > נועם > נטע, נועם באמצע" },
+      { q: "ענת מהירה יותר מטל. טל מהירה יותר ממיכל. מי הכי איטית?", options: ["ענת", "טל", "מיכל", "כולן שוות"], answer: 2, explain: "ענת>טל>מיכל, מיכל הכי איטית" },
+      { q: "ספר א' עבה יותר מספר ב'. ספר ב' עבה יותר מספר ג'. מי הכי דק?", options: ["א'", "ב'", "ג'", "אי אפשר לדעת"], answer: 2, explain: "א'>ב'>ג', ג' הכי דק" },
+      { q: "ילד 1 כבד מילד 2. ילד 3 קל מילד 2. מי הכי קל?", options: ["ילד 1", "ילד 2", "ילד 3", "כולם שווים"], answer: 2, explain: "1>2>3, ילד 3 הכי קל" },
+
+      // יחסי משפחה
+      { q: "במשפחה: דני אח של רותי. רותי אחות של מיכל. מיכל היא של דני...", options: ["דודה", "אחות", "אמא", "סבתא"], answer: 1, explain: "אם רותי אחות של מיכל ושל דני, מיכל אחות של דני" },
+      { q: "אבא של אמא שלי הוא...", options: ["דוד", "סבא", "אבא", "אח"], answer: 1, explain: "אבא של אמא = סבא" },
+      { q: "האחות של אבא היא...", options: ["סבתא", "דודה", "אמא", "אחות"], answer: 1, explain: "אחות של אבא = דודה" },
+      { q: "אם דני אח של תמר ותמר אחות של רון, אז דני ורון הם...", options: ["דודנים", "אחים", "חברים", "קוסמים"], answer: 1, explain: "אחים" },
+
+      // ימי שבוע ולוח שנה
+      { q: "אם היום יום שני, אתמול היה יום ראשון. מחר יהיה?", options: ["שני", "שלישי", "רביעי", "ראשון"], answer: 1, explain: "אחרי יום שני בא יום שלישי" },
+      { q: "יום אחרי שלישי הוא רביעי. יומיים אחרי שלישי הוא?", options: ["שני", "רביעי", "חמישי", "שישי"], answer: 2, explain: "שלישי + 2 ימים = חמישי" },
+      { q: "אם היום יום ראשון, איזה יום היה לפני 3 ימים?", options: ["חמישי", "שישי", "שבת", "שני"], answer: 0, explain: "ראשון - 3 ימים = חמישי" },
+      { q: "תמיד אחרי הקיץ בא...", options: ["אביב", "סתיו", "חורף", "סופר-קיץ"], answer: 1, explain: "סדר עונות" },
+      { q: "כמה ימים יש בשבוע אחד?", options: ["5", "6", "7", "8"], answer: 2, explain: "בשבוע 7 ימים" },
+      { q: "כמה חודשים יש בשנה אחת?", options: ["10", "11", "12", "13"], answer: 2, explain: "12 חודשים" },
+
+      // סיווגים
+      { q: "מי לא שייך לקבוצה: כלב, חתול, ציפור, שולחן", options: ["כלב", "חתול", "ציפור", "שולחן"], answer: 3, explain: "כל השאר חיות" },
+      { q: "מי לא שייך: תפוח, אגס, גזר, ענבים", options: ["תפוח", "אגס", "גזר", "ענבים"], answer: 2, explain: "כל השאר פירות" },
+      { q: "מי לא שייך: אדום, כחול, ירוק, עיגול", options: ["אדום", "כחול", "ירוק", "עיגול"], answer: 3, explain: "כל השאר צבעים" },
+      { q: "מי לא שייך: שולחן, כיסא, ספה, אוטו", options: ["שולחן", "כיסא", "ספה", "אוטו"], answer: 3, explain: "כל השאר רהיטים" },
+      { q: "מי לא שייך: עט, עיפרון, מחק, תפוח", options: ["עט", "עיפרון", "מחק", "תפוח"], answer: 3, explain: "כל השאר ציוד כתיבה" },
+      { q: "מי לא שייך: לב, ריאות, כבד, מכונית", options: ["לב", "ריאות", "כבד", "מכונית"], answer: 3, explain: "כל השאר איברים פנימיים" },
+      { q: "מי לא שייך: שמש, ירח, כוכב, עץ", options: ["שמש", "ירח", "כוכב", "עץ"], answer: 3, explain: "כל השאר גופי שמיים" },
+      { q: "מי לא שייך: ינואר, מאי, אוקטובר, יום שני", options: ["ינואר", "מאי", "אוקטובר", "יום שני"], answer: 3, explain: "כל השאר חודשים" },
+
+      // הסתברות וסבירות
+      { q: "בקופסה 4 כדורים אדומים ו-3 כחולים. אם אוציא כדור בלי לראות, מה יותר סביר?", options: ["אדום", "כחול", "ירוק", "שווה"], answer: 0, explain: "יש יותר אדומים, יותר סביר אדום" },
+      { q: "בקופסה 10 כדורים שחורים ו-1 לבן. מה הסיכוי לקבל לבן?", options: ["גדול מאוד", "קטן", "אפסי", "50/50"], answer: 1, explain: "סיכוי קטן, רק לבן אחד מתוך 11" },
+
+      // חישובי הגיון
+      { q: "סבא בן 70. הוא מבוגר מאבא ב-30 שנה. אבא בן?", options: ["30", "35", "40", "45"], answer: 2, explain: "70 - 30 = 40" },
+      { q: "אם ל-3 חתולים יש 12 רגליים, לכמה חתולים יהיו 20 רגליים?", options: ["4", "5", "6", "7"], answer: 1, explain: "כל חתול 4 רגליים, 20÷4=5" },
+      { q: "אם 5 ספרים שוקלים 1 קילו, כמה ישקלו 15 ספרים?", options: ["2", "3", "4", "5"], answer: 1, explain: "15÷5=3 קילו" },
+      { q: "10 ילדים יכולים לאכול 20 פיצות. כמה יאכלו 5 ילדים?", options: ["5", "10", "15", "20"], answer: 1, explain: "חצי מהילדים = חצי מהפיצות" },
+
+      // זוגיות
+      { q: "אם תוסיף 2 למספר זוגי, מה תקבל?", options: ["מספר זוגי", "מספר אי-זוגי", "אפס", "תלוי במספר"], answer: 0, explain: "זוגי + זוגי = זוגי" },
+      { q: "מספר אי-זוגי + מספר אי-זוגי = ?", options: ["זוגי", "אי-זוגי", "אפס", "תלוי"], answer: 0, explain: "אי-זוגי + אי-זוגי = זוגי תמיד" },
+
+      // היסקים שליליים
+      { q: "אם אין שמש - אין צל. עכשיו יש צל. מה זה אומר?", options: ["אין שמש", "יש שמש", "לילה", "ענן"], answer: 1, explain: "אם יש צל, יש שמש" },
+      { q: "כל הכוכבים בלילה. עכשיו יום. האם רואים כוכבים?", options: ["כן הרבה", "לא, אי אפשר", "רק כוכב אחד", "אולי"], answer: 1, explain: "ביום לא רואים כוכבים" },
+
+      // מסקנות
+      { q: "אם 'שלום' = ברכה, ו'תפוח' = פרי, אז 'כיסא' = ?", options: ["מילה", "ירק", "רהיט", "צבע"], answer: 2, explain: "סיווג של פריטים" },
+      { q: "אם א' לפני ב', ב' לפני ג', מי בסוף?", options: ["א'", "ב'", "ג'", "אף אחד"], answer: 2, explain: "א'-ב'-ג', ג' בסוף" },
+      { q: "ל-2 פרות יש 8 רגליים. כמה רגליים ל-5 פרות?", options: ["15", "20", "25", "30"], answer: 1, explain: "כל פרה 4 רגליים, 5×4=20" }
+    ]
+  },
+
+  spatial: {
+    name: "תפיסה מרחבית",
+    icon: "📐",
+    description: "חשיבה מרחבית, צורות וקיפולים",
+    questions: [
+      // צורות בסיס
+      { q: "כמה פאות יש לקוביה?", options: ["4", "5", "6", "8"], answer: 2, explain: "לקוביה יש 6 פאות" },
+      { q: "כמה צלעות יש למשולש?", options: ["2", "3", "4", "5"], answer: 1, explain: "למשולש יש 3 צלעות" },
+      { q: "כמה פינות (קודקודים) יש לריבוע?", options: ["3", "4", "5", "6"], answer: 1, explain: "לריבוע יש 4 פינות" },
+      { q: "כמה פינות יש לעיגול?", options: ["0", "1", "2", "אינסוף"], answer: 0, explain: "לעיגול אין פינות" },
+      { q: "כמה צלעות יש למחומש?", options: ["4", "5", "6", "7"], answer: 1, explain: "מחומש = 5 צלעות" },
+      { q: "כמה צלעות יש למשושה?", options: ["5", "6", "7", "8"], answer: 1, explain: "משושה = 6 צלעות" },
+      { q: "כמה קודקודים יש לקוביה?", options: ["4", "6", "8", "12"], answer: 2, explain: "לקוביה 8 קודקודים" },
+      { q: "כמה צלעות יש לקוביה?", options: ["6", "8", "10", "12"], answer: 3, explain: "לקוביה 12 צלעות" },
+      { q: "כמה צלעות במלבן?", options: ["3", "4", "5", "6"], answer: 1, explain: "במלבן 4 צלעות" },
+
+      // קיפולים
+      { q: "אם תקפל ריבוע נייר לאמצע, מה תקבל?", options: ["משולש", "מלבן", "ריבוע קטן", "עיגול"], answer: 1, explain: "מלבן" },
+      { q: "אם דף מקופל פעמיים והכנסת חור באמצע, כמה חורים יהיו כשתפתח?", options: ["1", "2", "3", "4"], answer: 3, explain: "קיפול פעמיים = 4 שכבות = 4 חורים" },
+      { q: "מקפלים ריבוע באלכסון. איזו צורה מתקבלת?", options: ["ריבוע", "מלבן", "משולש", "עיגול"], answer: 2, explain: "אלכסון של ריבוע יוצר משולשים" },
+      { q: "כמה פעמים אפשר לקפל דף נייר A4 לחצי לפני שזה נהיה ממש קשה?", options: ["3", "5-7", "10", "20"], answer: 1, explain: "בפועל בערך 6-7 פעמים" },
+      { q: "אם תקפל מלבן ארוך לחצי לאורכו, איזו צורה תקבל?", options: ["משולש", "ריבוע", "מלבן צר יותר", "עיגול"], answer: 2, explain: "מלבן יותר צר" },
+
+      // סיבובים
+      { q: "אם תסובב את האות 'ב' ב-180 מעלות, איך היא תיראה?", options: ["כמו 'ב'", "כמו 'ם'", "תהיה הפוכה", "כמו 'מ'"], answer: 2, explain: "סיבוב 180° הופך את הצורה" },
+      { q: "אם תסתובב 90° ימינה ועוד 90° ימינה, לאן אתה פונה?", options: ["לאותו כיוון", "ההפך", "ימינה לגמרי", "אחורה"], answer: 1, explain: "180° = ההפך" },
+      { q: "אם פנית 90° שמאלה 4 פעמים, לאן אתה פונה?", options: ["אחורה", "ימינה", "אותו כיוון", "שמאלה"], answer: 2, explain: "4×90°=360° = סיבוב מלא" },
+      { q: "האות N אחרי סיבוב 180° תיראה...", options: ["N", "Z", "M", "אותו דבר"], answer: 0, explain: "N נשארת N (סימטריה)" },
+
+      // מבט
+      { q: "אם תסתכל על קוביה רק מצד אחד, כמה ריבועים תראה?", options: ["1", "2", "4", "6"], answer: 0, explain: "מצד אחד רואים פאה אחת = ריבוע אחד" },
+      { q: "אם הסתכלת על גליל מלמעלה, מה תראה?", options: ["מלבן", "עיגול", "משולש", "ריבוע"], answer: 1, explain: "מלמעלה גליל נראה כמו עיגול" },
+      { q: "מצד גליל - איזו צורה רואים?", options: ["עיגול", "מלבן", "משולש", "אליפסה"], answer: 1, explain: "מהצד גליל נראה כמלבן" },
+      { q: "מלמעלה כדור נראה כ...?", options: ["ריבוע", "עיגול", "אליפסה", "משולש"], answer: 1, explain: "כדור = עיגול מכל זווית" },
+
+      // מראות
+      { q: "במראה, היד הימנית שלך נראית כמו?", options: ["יד ימין", "יד שמאל", "שתיהן", "אף אחת"], answer: 1, explain: "מראה הופכת ימין לשמאל" },
+      { q: "האות p במראה תיראה כמו...?", options: ["p", "q", "b", "d"], answer: 1, explain: "מראה הופכת ימין-שמאל" },
+
+      // צללים
+      { q: "כדור בעל צל - איזו צורה הצל?", options: ["ריבוע", "עיגול", "משולש", "תלוי בכיוון האור"], answer: 1, explain: "צל של כדור = עיגול" },
+      { q: "איזו צורה מתקבלת כשחותכים תפוז לחצי?", options: ["משולש", "ריבוע", "עיגול", "מלבן"], answer: 2, explain: "חתך של כדור = עיגול" },
+      { q: "מהו הצל של עיפרון מחודד שמונח על השולחן?", options: ["משולש דק", "עיגול", "ריבוע", "מלבן"], answer: 0, explain: "צל מתאים לצורה" },
+
+      // ניווט וכיוונים
+      { q: "מה ההפך של 'מעל'?", options: ["ליד", "מתחת", "מימין", "באמצע"], answer: 1, explain: "מעל ↔ מתחת" },
+      { q: "איזה כיוון הפוך מצפון?", options: ["מזרח", "מערב", "דרום", "ימין"], answer: 2, explain: "צפון ↔ דרום" },
+      { q: "אם פניך לצפון, מה משמאלך?", options: ["צפון", "דרום", "מערב", "מזרח"], answer: 2, explain: "פנים צפונה - שמאל זה מערב" },
+      { q: "אם פניך למזרח, מה מאחוריך?", options: ["מזרח", "מערב", "צפון", "דרום"], answer: 1, explain: "אחורה הפוך - מערב" },
+
+      // צירופים
+      { q: "מה תקבל אם תחבר 2 משולשים שווים?", options: ["עיגול", "מעוין/ריבוע", "מתומן", "כוכב"], answer: 1, explain: "שני משולשים יוצרים מעוין/ריבוע" },
+      { q: "מ-2 חצי-עיגולים שווים אפשר לבנות?", options: ["משולש", "עיגול", "ריבוע", "כוכב"], answer: 1, explain: "2 חצאי עיגולים = עיגול" },
+      { q: "צורה שיש לה 4 צלעות שוות וכל הזוויות שלה ישרות, היא?", options: ["מלבן", "ריבוע", "מעוין", "טרפז"], answer: 1, explain: "ריבוע" },
+      { q: "צורה עם 4 צלעות, שתי זוגות שוות, וזוויות ישרות?", options: ["ריבוע", "מלבן", "מעוין", "טרפז"], answer: 1, explain: "מלבן" },
+
+      // אריזות וכמויות
+      { q: "כמה ריבועים קטנים אפשר לסדר ב-3 שורות של 4?", options: ["7", "10", "12", "16"], answer: 2, explain: "3×4=12" },
+      { q: "אם בקובייה כל פאה צבועה אחרת, כמה צבעים יש?", options: ["3", "4", "6", "8"], answer: 2, explain: "6 פאות = 6 צבעים" },
+
+      // תלת-ממד
+      { q: "כמה ראשים יש לחץ ←?", options: ["0", "1", "2", "3"], answer: 1, explain: "ראש אחד" },
+      { q: "פירמידה עם בסיס מרובע - כמה פאות יש לה?", options: ["4", "5", "6", "8"], answer: 1, explain: "4 משולשים + 1 בסיס = 5" }
+    ]
+  },
+
+  language: {
+    name: "שפה ואוצר מילים",
+    icon: "📚",
+    description: "השלמת משפטים ומשמעות מילים",
+    questions: [
+      // משמעות מילים
+      { q: "מה משמעות המילה 'נדיב'?", options: ["קמצן", "נותן בשמחה", "כועס", "עצוב"], answer: 1, explain: "נדיב = אדם שאוהב לתת" },
+      { q: "מה משמעות 'מהיר'?", options: ["איטי", "זריז", "כבד", "חזק"], answer: 1, explain: "מהיר = זריז" },
+      { q: "מה משמעות 'ענק'?", options: ["קטן מאוד", "גדול מאוד", "בינוני", "צר"], answer: 1, explain: "ענק = גדול מאוד" },
+      { q: "מה משמעות 'קשוב'?", options: ["שמן", "מקשיב היטב", "צוחק", "רץ"], answer: 1, explain: "קשוב = מקשיב היטב" },
+      { q: "מה משמעות 'צנוע'?", options: ["מתרברב", "לא מתפאר", "כועס", "שמח"], answer: 1, explain: "צנוע = לא מתפאר" },
+      { q: "מה משמעות 'אמיץ'?", options: ["פוחד", "לא חושש", "ביישן", "חזק"], answer: 1, explain: "אמיץ = לא פוחד" },
+      { q: "מה משמעות 'חרוץ'?", options: ["עצלן", "עובד הרבה", "ישן", "אוכל"], answer: 1, explain: "חרוץ = עובד קשה" },
+      { q: "מה משמעות 'מלאכותי'?", options: ["טבעי", "לא טבעי, מעשה ידי אדם", "יפה", "ישן"], answer: 1, explain: "מלאכותי = לא טבעי" },
+      { q: "מה משמעות 'נוזל'?", options: ["מוצק", "חומר ששוטף", "אבק", "אבן"], answer: 1, explain: "נוזל - כמו מים" },
+
+      // ניגודים
+      { q: "מה ההפך של 'גדול'?", options: ["רחב", "ארוך", "קטן", "גבוה"], answer: 2, explain: "גדול ↔ קטן" },
+      { q: "מה ההפך של 'התחיל'?", options: ["נמשך", "סיים", "המשיך", "פתח"], answer: 1, explain: "התחיל ↔ סיים" },
+      { q: "מה ההפך של 'אמת'?", options: ["אגדה", "סיפור", "שקר", "סוד"], answer: 2, explain: "אמת ↔ שקר" },
+      { q: "מה ההפך של 'נקי'?", options: ["יבש", "מלוכלך", "רטוב", "חדש"], answer: 1, explain: "נקי ↔ מלוכלך" },
+      { q: "מה ההפך של 'חזק'?", options: ["חכם", "חלש", "גדול", "כבד"], answer: 1, explain: "חזק ↔ חלש" },
+      { q: "מה ההפך של 'צוחק'?", options: ["שותק", "בוכה", "ישן", "רץ"], answer: 1, explain: "צוחק ↔ בוכה" },
+      { q: "מה ההפך של 'עשיר'?", options: ["חכם", "עני", "רעב", "צעיר"], answer: 1, explain: "עשיר ↔ עני" },
+      { q: "מה ההפך של 'קל'?", options: ["יבש", "כבד", "פשוט", "רך"], answer: 1, explain: "קל ↔ כבד" },
+      { q: "מה ההפך של 'רחוק'?", options: ["קרוב", "ארוך", "גדול", "ישר"], answer: 0, explain: "רחוק ↔ קרוב" },
+
+      // מילים נרדפות
+      { q: "מילה דומה ל'יפה':", options: ["מכוער", "נחמד", "מקסים", "טוב"], answer: 2, explain: "מקסים = יפה מאוד" },
+      { q: "מילה דומה ל'חכם':", options: ["טיפש", "פיקח", "עייף", "רעב"], answer: 1, explain: "פיקח = חכם" },
+      { q: "מילה דומה ל'מהר':", options: ["לאט", "בזריזות", "בכוח", "בשקט"], answer: 1, explain: "בזריזות = מהר" },
+      { q: "מילה דומה ל'גדול':", options: ["קטן", "ענק", "צר", "קצר"], answer: 1, explain: "ענק = גדול מאוד" },
+      { q: "מילה דומה ל'שמח':", options: ["עצוב", "עליז", "כועס", "מפחד"], answer: 1, explain: "עליז = שמח" },
+      { q: "מילה דומה ל'בית':", options: ["דירה", "רחוב", "כיכר", "פארק"], answer: 0, explain: "דירה = סוג בית" },
+      { q: "מילה דומה ל'התחיל':", options: ["סיים", "פתח", "סגר", "עצר"], answer: 1, explain: "פתח = התחיל" },
+      { q: "מילה דומה ל'בכה':", options: ["צחק", "התייפח", "ישן", "ישב"], answer: 1, explain: "התייפח = בכה" },
+
+      // השלמות
+      { q: "השלם: דני קם בבוקר, ___ ויצא לבית הספר", options: ["שכב לישון", "התלבש ואכל", "שיחק כדורגל", "צפה בסרט"], answer: 1, explain: "פעולות בוקר הגיוניות" },
+      { q: "השלם: הילד צמא, הוא ___ מים", options: ["אכל", "שתה", "ראה", "זרק"], answer: 1, explain: "כשצמאים שותים" },
+      { q: "השלם: בחורף יורד ___ ובקיץ יש ___", options: ["שלג, שמש", "פרחים, גשם", "עלים, שלג", "אבק, ענן"], answer: 0, explain: "מתאים לעונות" },
+      { q: "השלם: הציפור עפה ב___", options: ["ים", "אדמה", "שמיים", "עץ"], answer: 2, explain: "ציפורים עפות בשמיים" },
+      { q: "השלם: הדג שוחה ב___", options: ["שמיים", "אדמה", "מים", "אוויר"], answer: 2, explain: "דגים שוחים במים" },
+      { q: "השלם: הילד היה רעב, אז הוא ___", options: ["שתה", "אכל", "ישן", "צעק"], answer: 1, explain: "רעב פותרים באכילה" },
+      { q: "השלם: כדי לכתוב צריך ___", options: ["ספר", "עט", "כדור", "מים"], answer: 1, explain: "עט/עיפרון לכתיבה" },
+      { q: "השלם: בלילה השמיים ___ ובהם ___", options: ["בהירים, ענן", "כהים, כוכבים", "לבנים, שמש", "ירוקים, פרחים"], answer: 1, explain: "לילה: שמיים כהים וכוכבים" },
+
+      // קבוצות
+      { q: "איזו מילה שונה: שמח, עליז, מאושר, עצוב", options: ["שמח", "עליז", "מאושר", "עצוב"], answer: 3, explain: "כל השאר חיוביים" },
+      { q: "איזו מילה שייכת לקבוצה: מטוס, רכבת, אוטובוס, ?", options: ["בית", "מכונית", "ספר", "פרח"], answer: 1, explain: "כולם תחבורה" },
+      { q: "איזו מילה לא שייכת: כובע, מעיל, נעל, אופניים", options: ["כובע", "מעיל", "נעל", "אופניים"], answer: 3, explain: "כל השאר לבוש" },
+      { q: "איזו מילה לא שייכת: ספר, מחברת, עט, כדור", options: ["ספר", "מחברת", "עט", "כדור"], answer: 3, explain: "כל השאר ציוד בית ספר" },
+      { q: "איזו מילה לא שייכת: ים, נהר, אגם, הר", options: ["ים", "נהר", "אגם", "הר"], answer: 3, explain: "כל השאר גופי מים" },
+      { q: "איזו מילה לא שייכת: רץ, קופץ, הולך, ישן", options: ["רץ", "קופץ", "הולך", "ישן"], answer: 3, explain: "כל השאר תנועה פעילה" },
+
+      // לשון רבים
+      { q: "מה הרבים של 'ילד'?", options: ["ילדה", "ילדים", "ילדות", "ילדון"], answer: 1, explain: "ילד → ילדים" },
+      { q: "מה הרבים של 'ספר'?", options: ["ספרון", "ספרים", "ספריה", "סופר"], answer: 1, explain: "ספר → ספרים" },
+      { q: "מה הרבים של 'עט'?", options: ["עטים", "עטות", "עטיים", "עטה"], answer: 0, explain: "עט → עטים" },
+      { q: "מה הרבים של 'אישה'?", options: ["אישות", "נשים", "אנשים", "אישימים"], answer: 1, explain: "אישה → נשים (לא סדיר)" },
+      { q: "מה הרבים של 'בית'?", options: ["בתים", "ביתים", "בתות", "בני בית"], answer: 0, explain: "בית → בתים" }
+    ]
+  }
+};
+
+// סך הכל שאלות
+function getTotalQuestionsCount() {
+  return Object.values(QUESTIONS).reduce((sum, cat) => sum + cat.questions.length, 0);
+}
+
+
+// =============================================
+// LocalStorage + Firebase Cloud Sync
+// =============================================
+const STORAGE_KEY = 'mihunan_v2_data';
+const SYNC_CODE_KEY = 'mihunan_sync_code';
+
+// Sync state
+let SYNC = {
+  code: localStorage.getItem(SYNC_CODE_KEY) || null,
+  status: 'offline',
+  unsubscribe: null,
+  saveTimer: null,
+  isApplyingRemote: false
+};
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return getEmptyData();
+    return JSON.parse(raw);
+  } catch (e) {
+    return getEmptyData();
+  }
+}
+
+function saveData(data) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (e) {
+    console.error('Failed to save locally:', e);
+  }
+  // Schedule cloud save (debounced) if connected
+  if (SYNC.code && SYNC.status !== 'offline' && !SYNC.isApplyingRemote) {
+    schedulCloudSave();
+  }
+}
+
+function getEmptyData() {
+  return {
+    profile: { name: '' },
+    history: [],
+    questionStats: {},
+    lastUpdated: 0
+  };
+}
+
+let DATA = loadData();
+
+// =============================================
+// Firebase Sync Logic
+// =============================================
+function setSyncStatus(status, msg) {
+  SYNC.status = status;
+  const el = document.getElementById('syncStatus');
+  const icon = document.getElementById('syncIcon');
+  const text = document.getElementById('syncText');
+  if (!el) return;
+
+  el.className = 'sync-status ' + status;
+  icon.className = 'sync-icon';
+
+  const config = {
+    offline: { icon: '☁️', text: 'מקומי בלבד' },
+    connecting: { icon: '⏳', text: 'מתחבר...' },
+    synced: { icon: '✅', text: 'מסונכרן' },
+    syncing: { icon: '🔄', text: 'שומר...' },
+    error: { icon: '⚠️', text: 'שגיאה' }
+  };
+  const c = config[status] || config.offline;
+  icon.textContent = msg ? '⚠️' : c.icon;
+  text.textContent = msg || c.text;
+  if (status === 'syncing' || status === 'connecting') {
+    icon.classList.add('spinning');
+  }
+}
+
+function schedulCloudSave() {
+  clearTimeout(SYNC.saveTimer);
+  setSyncStatus('syncing');
+  SYNC.saveTimer = setTimeout(() => { cloudSave(); }, 800);
+}
+
+async function cloudSave() {
+  if (!SYNC.code || !window._fb) return;
+  try {
+    DATA.lastUpdated = Date.now();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+    const ref = window._fb.doc(window._fb.db, 'students', SYNC.code);
+    await window._fb.setDoc(ref, DATA);
+    setSyncStatus('synced');
+  } catch (e) {
+    console.error('Cloud save failed:', e);
+    setSyncStatus('error', 'שגיאת שמירה');
+    setTimeout(() => { if (SYNC.code) setSyncStatus('synced'); }, 3000);
+  }
+}
+
+async function connectToCloud(code) {
+  if (!window._fbReady) {
+    setSyncStatus('error', 'אין חיבור לענן');
+    return false;
+  }
+  setSyncStatus('connecting');
+  try {
+    const ref = window._fb.doc(window._fb.db, 'students', code);
+    const snapshot = await window._fb.getDoc(ref);
+
+    if (snapshot.exists()) {
+      const remoteData = snapshot.data();
+      const remoteUpdated = remoteData.lastUpdated || 0;
+      const localUpdated = DATA.lastUpdated || 0;
+      const hasLocalData = DATA.history && DATA.history.length > 0;
+      const hasRemoteData = remoteData.history && remoteData.history.length > 0;
+
+      if (hasLocalData && hasRemoteData && remoteUpdated < localUpdated) {
+        await window._fb.setDoc(ref, DATA);
+      } else if (hasRemoteData) {
+        SYNC.isApplyingRemote = true;
+        DATA = remoteData;
+        if (!DATA.profile) DATA.profile = { name: '' };
+        if (!DATA.history) DATA.history = [];
+        if (!DATA.questionStats) DATA.questionStats = {};
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+        SYNC.isApplyingRemote = false;
+        renderProfile();
+        renderCategories();
+      } else if (hasLocalData) {
+        await window._fb.setDoc(ref, DATA);
+      }
+    } else {
+      DATA.lastUpdated = Date.now();
+      await window._fb.setDoc(ref, DATA);
+    }
+
+    if (SYNC.unsubscribe) SYNC.unsubscribe();
+    SYNC.unsubscribe = window._fb.onSnapshot(ref, (snap) => {
+      if (!snap.exists()) return;
+      const remote = snap.data();
+      const remoteUpdated = remote.lastUpdated || 0;
+      const localUpdated = DATA.lastUpdated || 0;
+      if (remoteUpdated > localUpdated) {
+        SYNC.isApplyingRemote = true;
+        DATA = remote;
+        if (!DATA.profile) DATA.profile = { name: '' };
+        if (!DATA.history) DATA.history = [];
+        if (!DATA.questionStats) DATA.questionStats = {};
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DATA));
+        SYNC.isApplyingRemote = false;
+        renderProfile();
+        renderCategories();
+        const activeTab = document.querySelector('.tab.active')?.dataset.tab;
+        if (activeTab === 'dashboard') renderDashboard();
+        if (activeTab === 'history') renderHistory();
+      }
+    }, (err) => {
+      console.error('Sync error:', err);
+      setSyncStatus('error', 'נותק');
+    });
+
+    SYNC.code = code;
+    localStorage.setItem(SYNC_CODE_KEY, code);
+    setSyncStatus('synced');
+    return true;
+  } catch (e) {
+    console.error('Connect failed:', e);
+    setSyncStatus('error', 'שגיאת חיבור');
+    return false;
+  }
+}
+
+function disconnectFromCloud() {
+  if (SYNC.unsubscribe) {
+    SYNC.unsubscribe();
+    SYNC.unsubscribe = null;
+  }
+  SYNC.code = null;
+  localStorage.removeItem(SYNC_CODE_KEY);
+  setSyncStatus('offline');
+}
+
+// Initialize sync when Firebase is ready
+window._onFirebaseReady = function() {
+  if (SYNC.code) {
+    connectToCloud(SYNC.code);
+  } else {
+    setSyncStatus('offline');
+  }
+};
+
+if (window._fbReady) {
+  window._onFirebaseReady();
+} else if (window._fbError) {
+  setSyncStatus('error', 'אין חיבור');
+}
+
+// Sync Modal handlers
+function openSyncModal() {
+  const modal = document.getElementById('syncModal');
+  const codeInput = document.getElementById('codeInput');
+  const status = document.getElementById('syncModalStatus');
+  const disconnect = document.getElementById('syncModalDisconnect');
+  const desc = document.getElementById('syncModalDesc');
+
+  status.innerHTML = '';
+  if (SYNC.code) {
+    codeInput.value = SYNC.code;
+    desc.innerHTML = `מחובר עם הקוד: <strong>${SYNC.code}</strong><br>ההתקדמות מסתנכרנת אוטומטית בין כל המכשירים שמשתמשים באותו קוד.`;
+    disconnect.classList.remove('hidden');
+  } else {
+    codeInput.value = '';
+    desc.innerHTML = 'הזן קוד אישי כדי לסנכרן בין מחשב וטאבלט. <strong>אותו קוד = אותם נתונים.</strong>';
+    disconnect.classList.add('hidden');
+  }
+  modal.classList.remove('hidden');
+  setTimeout(() => codeInput.focus(), 100);
+}
+
+function closeSyncModal(e) {
+  if (e && e.target.id !== 'syncModal') return;
+  document.getElementById('syncModal').classList.add('hidden');
+}
+
+async function connectSync() {
+  const code = document.getElementById('codeInput').value.trim().toLowerCase();
+  const status = document.getElementById('syncModalStatus');
+  if (!code) {
+    status.innerHTML = '<span style="color: var(--error);">⚠️ נא להזין קוד</span>';
+    return;
+  }
+  if (code.length < 3) {
+    status.innerHTML = '<span style="color: var(--error);">⚠️ הקוד חייב להיות לפחות 3 תווים</span>';
+    return;
+  }
+  status.innerHTML = '<span style="color: var(--accent);">⏳ מתחבר ומסנכרן...</span>';
+  const ok = await connectToCloud(code);
+  if (ok) {
+    status.innerHTML = '<span style="color: var(--success);">✅ חובר בהצלחה!</span>';
+    setTimeout(() => closeSyncModal(), 800);
+  } else {
+    status.innerHTML = '<span style="color: var(--error);">⚠️ שגיאת חיבור. בדוק חיבור לאינטרנט.</span>';
+  }
+}
+
+function disconnectSync() {
+  if (confirm('בטוח שתרצה לנתק את הסנכרון? הנתונים יישארו במכשיר הזה אבל לא יסתנכרנו יותר.')) {
+    disconnectFromCloud();
+    closeSyncModal();
+  }
+}
+
+// =============================================
+// State
+// =============================================
+let state = {
+  mode: 'practice',
+  categoryKey: null,
+  questions: [],
+  currentIdx: 0,
+  correct: 0,
+  wrong: 0,
+  answered: false,
+  startTime: null,
+  streak: 0,
+  bestStreak: 0,
+  details: [] // {q, chosen, correctIdx, isCorrect, explain, catKey, options}
+};
+
+// =============================================
+// Profile
+// =============================================
+function openProfileModal() {
+  document.getElementById('nameInput').value = DATA.profile.name || '';
+  document.getElementById('profileModal').classList.remove('hidden');
+  setTimeout(() => document.getElementById('nameInput').focus(), 100);
+}
+
+function closeProfileModal(e) {
+  if (e && e.target.id !== 'profileModal') return;
+  document.getElementById('profileModal').classList.add('hidden');
+}
+
+function saveProfile() {
+  const name = document.getElementById('nameInput').value.trim();
+  if (name) {
+    DATA.profile.name = name;
+    saveData(DATA);
+    renderProfile();
+  }
+  closeProfileModal();
+}
+
+function renderProfile() {
+  const name = DATA.profile.name;
+  document.getElementById('profileName').textContent = name || 'לחץ להגדיר שם';
+  document.getElementById('profileAvatar').textContent = name ? name[0].toUpperCase() : '👶';
+}
+
+// =============================================
+// Tabs
+// =============================================
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  ['practice', 'dashboard', 'history'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('hidden', t !== name);
+  });
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'history') renderHistory();
+  if (name === 'practice') renderCategories();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// =============================================
+// קטגוריות
+// =============================================
+function renderCategories() {
+  const grid = document.getElementById('categoriesGrid');
+  grid.innerHTML = '';
+
+  // כפתור "הכל ביחד"
+  const allBtn = document.createElement('div');
+  allBtn.className = 'category-card';
+  allBtn.style.cssText = 'background: linear-gradient(135deg, #6366f1, #ec4899); color: white;';
+  allBtn.innerHTML = `
+    <span class="category-icon">🌟</span>
+    <div class="category-name" style="color: white;">הכל ביחד</div>
+    <div class="category-desc" style="color: rgba(255,255,255,0.9);">מבחר משולב מכל הקטגוריות</div>
+    <div class="category-count" style="background: white; color: #6366f1;">${getTotalQuestionsCount()} שאלות</div>
+  `;
+  allBtn.onclick = () => startQuiz('all');
+  grid.appendChild(allBtn);
+
+  Object.entries(QUESTIONS).forEach(([key, cat]) => {
+    const stats = getCategoryStats(key);
+    let statsBadge = '';
+    if (stats.total > 0) {
+      const pct = Math.round((stats.correct / stats.total) * 100);
+      let cls = 'medium';
+      if (pct >= 75) cls = 'strong';
+      else if (pct < 50) cls = 'weak';
+      statsBadge = `<div class="category-stats ${cls}">📊 ${pct}% הצלחה</div>`;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'category-card';
+    card.innerHTML = `
+      <span class="category-icon">${cat.icon}</span>
+      <div class="category-name">${cat.name}</div>
+      <div class="category-desc">${cat.description}</div>
+      <div class="category-count">${cat.questions.length} שאלות</div>
+      ${statsBadge}
+    `;
+    card.onclick = () => startQuiz(key);
+    grid.appendChild(card);
+  });
+}
+
+// =============================================
+// סטטיסטיקה לפי קטגוריה
+// =============================================
+function getCategoryStats(catKey) {
+  let correct = 0, total = 0;
+  DATA.history.forEach(h => {
+    h.details?.forEach(d => {
+      if (d.catKey === catKey) {
+        total++;
+        if (d.isCorrect) correct++;
+      }
+    });
+  });
+  return { correct, total };
+}
+
+function getAllCategoryStats() {
+  const result = {};
+  Object.keys(QUESTIONS).forEach(key => {
+    result[key] = getCategoryStats(key);
+  });
+  return result;
+}
+
+// =============================================
+// שאלות חלשות
+// =============================================
+function getWeakQuestions(limit = 30) {
+  // אסוף קטגוריות חלשות
+  const allStats = getAllCategoryStats();
+  const sorted = Object.entries(allStats)
+    .filter(([k, s]) => s.total > 0)
+    .sort((a, b) => {
+      const pa = a[1].correct / a[1].total;
+      const pb = b[1].correct / b[1].total;
+      return pa - pb;
+    });
+
+  // אסוף שאלות מהקטגוריות החלשות (עד 50%)
+  const weakCats = sorted.filter(([k, s]) => (s.correct / s.total) < 0.75).map(([k]) => k);
+  if (weakCats.length === 0) {
+    // אין נתונים מספיק - החזר אקראי
+    let allQs = [];
+    Object.entries(QUESTIONS).forEach(([key, cat]) => {
+      allQs = allQs.concat(cat.questions.map(q => ({...q, _catKey: key, _cat: cat.name})));
+    });
+    return shuffle(allQs).slice(0, limit);
+  }
+
+  let weakQs = [];
+  weakCats.forEach(key => {
+    weakQs = weakQs.concat(QUESTIONS[key].questions.map(q => ({...q, _catKey: key, _cat: QUESTIONS[key].name})));
+  });
+  return shuffle(weakQs).slice(0, limit);
+}
+
+// =============================================
+// תחילת מבחן
+// =============================================
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function setMode(mode, btn) {
+  state.mode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function startQuiz(categoryKey) {
+  state.categoryKey = categoryKey;
+  state.currentIdx = 0;
+  state.correct = 0;
+  state.wrong = 0;
+  state.streak = 0;
+  state.bestStreak = 0;
+  state.startTime = Date.now();
+  state.details = [];
+
+  let allQs = [];
+  if (state.mode === 'weak') {
+    allQs = getWeakQuestions(30);
+  } else if (categoryKey === 'all') {
+    Object.entries(QUESTIONS).forEach(([key, cat]) => {
+      allQs = allQs.concat(cat.questions.map(q => ({...q, _catKey: key, _cat: cat.name})));
+    });
+  } else {
+    allQs = QUESTIONS[categoryKey].questions.map(q => ({...q, _catKey: categoryKey, _cat: QUESTIONS[categoryKey].name}));
+  }
+
+  if (state.mode === 'exam') {
+    state.questions = shuffle(allQs).slice(0, Math.min(30, allQs.length));
+  } else if (state.mode === 'random') {
+    state.questions = shuffle(allQs).slice(0, Math.min(20, allQs.length));
+  } else if (state.mode === 'weak') {
+    state.questions = allQs;
+  } else {
+    state.questions = shuffle(allQs);
+  }
+
+  showScreen('quiz');
+  renderQuestion();
+}
+
+// =============================================
+// הצגת שאלה
+// =============================================
+function renderQuestion() {
+  const q = state.questions[state.currentIdx];
+  state.answered = false;
+
+  document.getElementById('quizCategoryName').textContent = q._cat || 'תרגול';
+  document.getElementById('quizProgressText').textContent = `שאלה ${state.currentIdx + 1} מתוך ${state.questions.length}`;
+  document.getElementById('progressFill').style.width = `${(state.currentIdx / state.questions.length) * 100}%`;
+  document.getElementById('questionText').textContent = q.q;
+
+  const optionsList = document.getElementById('optionsList');
+  optionsList.innerHTML = '';
+  const letters = ['א', 'ב', 'ג', 'ד'];
+
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[idx]}</span><span>${opt}</span>`;
+    btn.onclick = () => selectOption(idx);
+    optionsList.appendChild(btn);
+  });
+
+  document.getElementById('feedbackArea').innerHTML = '';
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('nextBtn').textContent = state.currentIdx === state.questions.length - 1 ? 'סיים מבחן 🏁' : 'הבא ⬅';
+
+  if (state.streak > 0) {
+    document.getElementById('streakBadge').classList.remove('hidden');
+    document.getElementById('streakCount').textContent = state.streak;
+  } else {
+    document.getElementById('streakBadge').classList.add('hidden');
+  }
+}
+
+// =============================================
+// בחירת תשובה
+// =============================================
+function selectOption(idx) {
+  if (state.answered) return;
+  state.answered = true;
+
+  const q = state.questions[state.currentIdx];
+  const buttons = document.querySelectorAll('.option-btn');
+
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.answer) btn.classList.add('correct');
+    else if (i === idx) btn.classList.add('incorrect');
+  });
+
+  const isCorrect = idx === q.answer;
+  if (isCorrect) {
+    state.correct++;
+    state.streak++;
+    if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+  } else {
+    state.wrong++;
+    state.streak = 0;
+  }
+
+  // שמור פרטים לדוח
+  state.details.push({
+    q: q.q,
+    options: q.options,
+    chosen: idx,
+    correctIdx: q.answer,
+    isCorrect,
+    explain: q.explain,
+    catKey: q._catKey,
+    catName: q._cat
+  });
+
+  if (state.mode === 'practice') {
+    const feedback = document.createElement('div');
+    feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+    feedback.innerHTML = `
+      <div class="feedback-title">${isCorrect ? '✅ נכון!' : '❌ לא נכון'}</div>
+      <div class="feedback-text"><strong>הסבר:</strong> ${q.explain}</div>
+    `;
+    document.getElementById('feedbackArea').appendChild(feedback);
+  }
+
+  document.getElementById('nextBtn').disabled = false;
+}
+
+function nextQuestion() {
+  if (state.currentIdx < state.questions.length - 1) {
+    state.currentIdx++;
+    renderQuestion();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  } else {
+    showResults();
+  }
+}
+
+// =============================================
+// תוצאות + שמירה
+// =============================================
+function showResults() {
+  showScreen('results');
+  const total = state.questions.length;
+  const percent = Math.round((state.correct / total) * 100);
+  const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+
+  // שמור להיסטוריה
+  const historyEntry = {
+    date: new Date().toISOString(),
+    mode: state.mode,
+    category: state.categoryKey,
+    categoryName: state.categoryKey === 'all' ? 'מבחר מעורב' : (state.categoryKey === null ? 'מעורב' : (QUESTIONS[state.categoryKey]?.name || 'תרגול')),
+    total,
+    correct: state.correct,
+    wrong: state.wrong,
+    percent,
+    time: elapsed,
+    bestStreak: state.bestStreak,
+    details: state.details.map(d => ({
+      q: d.q,
+      chosen: d.options[d.chosen],
+      correct: d.options[d.correctIdx],
+      isCorrect: d.isCorrect,
+      explain: d.explain,
+      catKey: d.catKey
+    }))
+  };
+  DATA.history.unshift(historyEntry);
+  // הגבל ל-100 מבחנים אחרונים
+  if (DATA.history.length > 100) DATA.history = DATA.history.slice(0, 100);
+  saveData(DATA);
+
+  document.getElementById('resultsScore').textContent = `${state.correct}/${total}`;
+  document.getElementById('resultsPercent').textContent = `${percent}%`;
+  document.getElementById('statCorrect').textContent = state.correct;
+  document.getElementById('statWrong').textContent = state.wrong;
+  document.getElementById('statBestStreak').textContent = state.bestStreak;
+
+  const mins = Math.floor(elapsed / 60);
+  const secs = elapsed % 60;
+  document.getElementById('statTime').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+
+  let emoji, message;
+  if (percent === 100) {
+    emoji = '🏆'; message = 'מושלם! ענית נכון על כל השאלות! אלוף!';
+  } else if (percent >= 90) {
+    emoji = '🌟'; message = 'מצוין! אתה ברמה גבוהה מאוד! המשך כך!';
+  } else if (percent >= 75) {
+    emoji = '🎉'; message = 'כל הכבוד! תוצאה טובה מאוד.';
+  } else if (percent >= 60) {
+    emoji = '👍'; message = 'יפה מאוד! יש לך בסיס טוב. תרגל עוד ותשתפר!';
+  } else if (percent >= 40) {
+    emoji = '💪'; message = 'התחלה טובה! חזור על ההסברים ותרגל שוב!';
+  } else {
+    emoji = '📚'; message = 'אל תתייאש! חזור על השאלות ולמד מהטעויות.';
+  }
+  document.getElementById('resultsEmoji').textContent = emoji;
+  document.getElementById('resultsMessage').textContent = message;
+
+  // דוח מפורט
+  renderReview();
+}
+
+function renderReview() {
+  const list = document.getElementById('reviewList');
+  list.innerHTML = '';
+  state.details.forEach((d, i) => {
+    const item = document.createElement('div');
+    item.className = `review-item ${d.isCorrect ? 'correct' : 'incorrect'}`;
+    item.innerHTML = `
+      <div class="review-q">${i + 1}. ${d.q}</div>
+      <div class="review-answers">
+        <div>${d.isCorrect ? '✅' : '❌'} <strong>תשובת הילד:</strong> ${d.options[d.chosen]}</div>
+        ${!d.isCorrect ? `<div style="margin-top: 4px;">✓ <strong>תשובה נכונה:</strong> ${d.options[d.correctIdx]}</div>` : ''}
+      </div>
+      <div class="review-explain"><strong>💡 הסבר:</strong> ${d.explain}</div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function restartQuiz() {
+  startQuiz(state.categoryKey);
+}
+
+function goHome() {
+  showScreen('home');
+  renderCategories();
+}
+
+function confirmExit() {
+  if (state.currentIdx < state.questions.length && state.questions.length > 0 && state.currentIdx > 0) {
+    if (confirm('לעצור את התרגול ולחזור לבית? ההתקדמות לא תישמר.')) {
+      goHome();
+    }
+  } else {
+    goHome();
+  }
+}
+
+function showScreen(name) {
+  ['home', 'quiz', 'results'].forEach(s => {
+    document.getElementById('screen-' + s).classList.toggle('hidden', s !== name);
+  });
+}
+
+// =============================================
+// Dashboard - התקדמות
+// =============================================
+function renderDashboard() {
+  const history = DATA.history;
+  const totalTests = history.length;
+  let totalQ = 0, totalCorrect = 0;
+  history.forEach(h => { totalQ += h.total; totalCorrect += h.correct; });
+  const avgPercent = totalQ > 0 ? Math.round((totalCorrect / totalQ) * 100) : 0;
+  const bestPercent = history.length > 0 ? Math.max(...history.map(h => h.percent)) : 0;
+
+  // סטטיסטיקה כללית
+  const stats = document.getElementById('overallStats');
+  stats.innerHTML = `
+    <div class="stat-card">
+      <div class="stat-value">${totalTests}</div>
+      <div class="stat-label">מבחנים שנעשו</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${totalQ}</div>
+      <div class="stat-label">שאלות שנענו</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${avgPercent}%</div>
+      <div class="stat-label">ממוצע הצלחה</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${bestPercent}%</div>
+      <div class="stat-label">תוצאה הכי טובה</div>
+    </div>
+  `;
+
+  // גרף שיפור
+  renderChart();
+
+  // קטגוריות
+  renderCatStats();
+}
+
+function renderChart() {
+  const container = document.getElementById('chartContainer');
+  const last10 = DATA.history.slice(0, 10).reverse();
+
+  if (last10.length < 2) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📈</div>
+        <p>עוד אין מספיק נתונים</p>
+        <p style="font-size: 13px;">צריך לפחות 2 מבחנים להצגת גרף</p>
+      </div>
+    `;
+    return;
+  }
+
+  const W = 700, H = 200, P = 30;
+  const xStep = (W - 2*P) / (last10.length - 1);
+  const points = last10.map((h, i) => ({
+    x: P + i * xStep,
+    y: P + (H - 2*P) * (1 - h.percent / 100),
+    pct: h.percent
+  }));
+
+  const pathD = points.map((p, i) => (i === 0 ? 'M' : 'L') + p.x + ',' + p.y).join(' ');
+  const areaD = pathD + ` L${points[points.length-1].x},${H-P} L${points[0].x},${H-P} Z`;
+
+  container.innerHTML = `
+    <svg class="chart-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="gradFill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="#6366f1" stop-opacity="0.4"/>
+          <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <line x1="${P}" y1="${P}" x2="${P}" y2="${H-P}" stroke="#cbd5e1" stroke-width="1"/>
+      <line x1="${P}" y1="${H-P}" x2="${W-P}" y2="${H-P}" stroke="#cbd5e1" stroke-width="1"/>
+      <line x1="${P}" y1="${P + (H-2*P)*0.5}" x2="${W-P}" y2="${P + (H-2*P)*0.5}" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="${P-5}" y="${P+5}" text-anchor="end" font-size="11" fill="#64748b">100%</text>
+      <text x="${P-5}" y="${P + (H-2*P)*0.5 + 4}" text-anchor="end" font-size="11" fill="#64748b">50%</text>
+      <text x="${P-5}" y="${H-P+5}" text-anchor="end" font-size="11" fill="#64748b">0%</text>
+      <path d="${areaD}" fill="url(#gradFill)"/>
+      <path d="${pathD}" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      ${points.map(p => `<circle cx="${p.x}" cy="${p.y}" r="5" fill="white" stroke="#6366f1" stroke-width="3"/><text x="${p.x}" y="${p.y - 12}" text-anchor="middle" font-size="11" font-weight="700" fill="#6366f1">${p.pct}%</text>`).join('')}
+    </svg>
+  `;
+}
+
+function renderCatStats() {
+  const container = document.getElementById('catStats');
+  container.innerHTML = '';
+
+  Object.entries(QUESTIONS).forEach(([key, cat]) => {
+    const stats = getCategoryStats(key);
+    const pct = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+    const text = stats.total > 0 ? `${stats.correct}/${stats.total} (${pct}%)` : 'אין נתונים עדיין';
+
+    const row = document.createElement('div');
+    row.className = 'cat-stat-row';
+    row.innerHTML = `
+      <span class="cat-stat-icon">${cat.icon}</span>
+      <div class="cat-stat-info">
+        <div class="cat-stat-name">${cat.name}</div>
+        ${stats.total > 0 ? `<div class="cat-stat-bar"><div class="cat-stat-fill" style="width: ${pct}%"></div></div>` : `<div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">${text}</div>`}
+      </div>
+      <div class="cat-stat-percent">${stats.total > 0 ? pct + '%' : '—'}</div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+// =============================================
+// היסטוריה
+// =============================================
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (DATA.history.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <p>אין עדיין מבחנים שנעשו</p>
+        <p style="font-size: 13px;">התחל לתרגל וההיסטוריה תופיע כאן</p>
+      </div>
+    `;
+    return;
+  }
+
+  list.innerHTML = '';
+  DATA.history.forEach((h, i) => {
+    const date = new Date(h.date);
+    const dateStr = date.toLocaleDateString('he-IL', {day: '2-digit', month: '2-digit', year: 'numeric'});
+    const timeStr = date.toLocaleTimeString('he-IL', {hour: '2-digit', minute: '2-digit'});
+    const mins = Math.floor(h.time / 60);
+    const secs = h.time % 60;
+    const timeDur = `${mins}:${secs.toString().padStart(2, '0')}`;
+
+    const cls = h.percent >= 75 ? 'high' : h.percent >= 50 ? 'med' : 'low';
+    const modeLabel = {practice: '📖 תרגול', exam: '📝 מבחן', random: '🎲 אקראי', weak: '💪 חיזוק'}[h.mode] || h.mode;
+
+    const item = document.createElement('div');
+    item.className = 'history-item ' + cls;
+    item.innerHTML = `
+      <div class="history-info">
+        <div class="history-title">${h.categoryName} · ${modeLabel}</div>
+        <div class="history-meta">📅 ${dateStr} · ${timeStr} · ⏱ ${timeDur} · ${h.correct}/${h.total} נכונות</div>
+      </div>
+      <div class="history-score ${cls}">${h.percent}%</div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function confirmClearHistory() {
+  if (DATA.history.length === 0) return alert('אין היסטוריה למחוק');
+  if (confirm('בטוח שתרצה למחוק את כל ההיסטוריה? פעולה זו לא ניתנת לביטול.')) {
+    DATA.history = [];
+    saveData(DATA);
+    renderHistory();
+    renderCategories();
+  }
+}
+
+// =============================================
+// אתחול
+// =============================================
+renderProfile();
+renderCategories();
+
+// First-run flow: ask for name, then offer to set up sync
+if (!DATA.profile.name) {
+  setTimeout(() => {
+    openProfileModal();
+  }, 600);
+} else if (!SYNC.code) {
+  // Has profile but no sync code - gently offer sync after a moment
+  setTimeout(() => {
+    if (!SYNC.code && window._fbReady) {
+      // Show a non-intrusive hint
+      const hint = document.getElementById('syncStatus');
+      if (hint) {
+        hint.style.animation = 'shake 0.5s ease 2';
+        setTimeout(() => { hint.style.animation = ''; }, 1500);
+      }
+    }
+  }, 1500);
+}
+
+// Override saveProfile to also save to cloud when set
+const _origSaveProfile = saveProfile;
+saveProfile = function() {
+  _origSaveProfile();
+  // After name is saved, prompt for sync if not set
+  if (DATA.profile.name && !SYNC.code && window._fbReady) {
+    setTimeout(() => {
+      if (confirm('רוצה לסנכרן בין מחשב וטאבלט?\n\nבכל פעם שתעבור בין מכשירים, ההתקדמות תיטען אוטומטית.')) {
+        openSyncModal();
+      }
+    }, 400);
+  }
+};
+</script>
+
+</body>
+</html>
